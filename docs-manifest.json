@@ -1,0 +1,25 @@
+{
+  "repo": "smilinTux/skmemory",
+  "branch": "main",
+  "path": "docs",
+  "generated": "2026-06-30",
+  "note": "Committed fallback for the /docs viewer when the GitHub Contents API is unavailable or rate-limited. Regenerate from: python docs-manifest-gen.py smilinTux/skmemory --out docs-manifest.json",
+  "docs": [
+    {
+      "name": "FORTRESS_SOP.md",
+      "title": "Memory Fortress — Standard Operating Procedure"
+    },
+    {
+      "name": "PQC_SEALING.md",
+      "title": "At-Rest Sealing Seam (PQC-ready)"
+    },
+    {
+      "name": "PROVENANCE_AND_CLOSURE_DESIGN.md",
+      "title": "skmemory — Provenance Admission + Arc Closure (design note)"
+    },
+    {
+      "name": "admission_policy.md",
+      "title": "skmemory — admission policy"
+    }
+  ]
+}
