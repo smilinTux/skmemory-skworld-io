@@ -2,7 +2,7 @@
   "repo": "smilinTux/skmemory",
   "branch": "main",
   "path": "docs",
-  "generated": "2026-07-10",
+  "generated": "2026-07-13",
   "note": "Committed fallback for the /docs viewer when the GitHub Contents API is unavailable or rate-limited. Regenerate from: python docs-manifest-gen.py smilinTux/skmemory --out docs-manifest.json",
   "docs": [
     {
@@ -36,6 +36,10 @@
     {
       "name": "admission_policy.md",
       "title": "skmemory — admission policy"
+    },
+    {
+      "name": "skmem-pg-local-rebuild-remediation.md",
+      "title": "skmem-pg Remediation Plan — prb-6f069c5e (streaming-replication → local-per-node rebuild)"
     }
   ]
 }
