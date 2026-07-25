@@ -2,7 +2,7 @@
   "repo": "smilinTux/skmemory",
   "branch": "main",
   "path": "docs",
-  "generated": "2026-07-24",
+  "generated": "2026-07-25",
   "note": "Committed fallback for the /docs viewer when the GitHub Contents API is unavailable or rate-limited. Regenerate from: python docs-manifest-gen.py smilinTux/skmemory --out docs-manifest.json",
   "docs": [
     {
@@ -12,6 +12,10 @@
     {
       "name": "ARCHITECTURE.md",
       "title": "SKMemory Architecture"
+    },
+    {
+      "name": "DERIVED_STORE_INVENTORY.md",
+      "title": "Derived-Store Inventory (forget-cascade)"
     },
     {
       "name": "FORTRESS_SOP.md",
