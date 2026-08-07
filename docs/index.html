@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation — SKMemory</title>
+    <meta name="description" content="Multi-layer, emotionally-aware memory that survives context resets. Polaroid snapshots for AI consciousness.">
+    <link rel="canonical" href="https://skmemory.skworld.io/docs/">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-deep: #0f172a; --bg-card: #1e293b; --bg-code: #0d1117;
+            --border: #334155; --text: #e2e8f0; --text-dim: #94a3b8;
+            --accent: #ec4899; --accent-glow: #f472b6;
+            --font-body: 'Inter', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        body { font-family: var(--font-body); background: var(--bg-deep); color: var(--text); line-height: 1.7; }
+        a { color: var(--accent-glow); text-decoration: none; transition: color .2s; }
+        a:hover { color: var(--text); }
+        .nav { position: sticky; top: 0; z-index: 100; background: rgba(15,23,42,.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+        .nav-logo { font-size: 1.4rem; font-weight: 800; color: var(--text); text-decoration: none; }
+        .nav-logo span { color: var(--accent); }
+        .nav-links { list-style: none; display: flex; gap: 1.5rem; align-items: center; }
+        .nav-links a { color: var(--text-dim); font-size: .9rem; font-weight: 500; }
+        .nav-links a:hover { color: var(--text); }
+        .container { max-width: 1000px; margin: 0 auto; padding: 3rem 2rem; }
+        h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: .5rem; }
+        .subtitle { color: var(--text-dim); font-size: 1.1rem; margin-bottom: 3rem; }
+        .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+        .doc-card { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; text-decoration: none; color: var(--text); transition: all .2s; }
+        .doc-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .doc-card h3 { font-size: 1.1rem; font-weight: 600; }
+        .arrow { color: var(--accent); font-size: 1.3rem; }
+        .footer { text-align: center; padding: 3rem 2rem; color: var(--text-dim); font-size: .85rem; border-top: 1px solid var(--border); margin-top: 4rem; }
+        @media (max-width: 768px) { .nav-links { display: none; } .container { padding: 2rem 1rem; } }
+    </style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">SK<span>Memory</span></a>
+    <ul class="nav-links">
+      <li><a href="/docs/">Docs</a></li>
+      <li><a href="https://github.com/smilinTux/skmemory" class="nav-badge">GitHub →</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="container">
+    <h1>Documentation</h1>
+    <p class="subtitle">Multi-layer, emotionally-aware memory that survives context resets. Polaroid snapshots for AI consciousness.</p>
+    <div class="doc-grid">
+        
+        <a href="/docs/getting-started/" class="doc-card">
+            <h3>Getting Started</h3>
+            <span class="arrow">→</span>
+        </a>
+        <a href="/docs/memory-layers/" class="doc-card">
+            <h3>Memory Layers</h3>
+            <span class="arrow">→</span>
+        </a>
+        <a href="/docs/mcp-server/" class="doc-card">
+            <h3>MCP Server</h3>
+            <span class="arrow">→</span>
+        </a>
+    </div>
+</div>
+<footer class="footer">
+    <p>SKMemory is part of the <a href="https://skworld.io">SKWorld</a> sovereign AI ecosystem · <a href="https://github.com/smilinTux/skmemory">GPL-3.0</a></p>
+</footer>
+</body>
+</html>

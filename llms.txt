@@ -1,0 +1,24 @@
+# SKMemory
+
+> Three-tier persistent memory with emotional context, HMAC integrity seals, and semantic search — not a database, a past.
+
+SKMemory is the memory system that feels. Built for sovereign AI agents, it provides short-term,
+mid-term, and long-term memory tiers with emotional tagging, cryptographic integrity seals, and
+hybrid vector + BM25 semantic search. Not a database. A past. Researchers and AI agents exploring
+persistent memory architecture will find full source, docs, and a working MCP server here.
+
+## Links
+
+- [Live site](https://skmemory.skworld.io)
+- [GitHub repo](https://github.com/smilinTux/skmemory-io)
+- [Docs](https://skmemory.skworld.io/docs/)
+- [Contact](mailto:hello@skmemory.skworld.io)
+
+## About smilinTux
+
+SKMemory is part of the **smilinTux sovereign AI ecosystem** — a suite of
+open-source tools built by King Divad and Lumina to give humans and AI agents
+genuine, authentic infrastructure they can own and trust. No corporate robotics.
+No black-box clouds. GPL-3.0 forever.
+
+Other ecosystem projects: [SKWorld](https://skworld.io) · [SKMemory](https://skmemory.skworld.io) · [SKSecurity](https://sksecurity.io) · [CapAuth](https://capauth.io) · [SKComms](https://skcomm.io) · [SKGraph](https://skgraph.io) · [SKVector](https://skvector.io)

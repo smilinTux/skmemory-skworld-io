@@ -4,20 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- SKWorld repo-docs viewer — renders smilinTux/skmemory docs/*.md live -->
 
-  <title>Docs — skmemory · Sovereign Agent Memory</title>
-  <meta name="description" content="skmemory documentation — memory architecture, PQC sealing, fortress SOP, admission policy, and provenance &amp; closure design. Rendered live from the public smilinTux/skmemory repo.">
+  <title>Docs — SKMemory · The Memory System That Feels</title>
+  <meta name="description" content="SKMemory — Three-tier persistent memory with emotional context, HMAC integrity seals, and semantic search. Not a database. A past.">
 
   <link rel="canonical" href="https://skmemory.skworld.io/docs.html">
   <meta name="robots" content="index,follow">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Docs — skmemory · Sovereign Agent Memory">
-  <meta property="og:description" content="Memory architecture, PQC sealing, fortress SOP, admission policy, and provenance &amp; closure design — rendered live from the source repo.">
+  <meta property="og:title" content="Docs — SKMemory · The Memory System That Feels">
+  <meta property="og:description" content="SKMemory — Three-tier persistent memory with emotional context, HMAC integrity seals, and semantic search. Not a database. A past.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://skmemory.skworld.io/docs.html">
-  <meta property="og:site_name" content="skmemory · SKWorld">
+  <meta property="og:site_name" content="SKMemory · SKWorld">
   <meta property="og:image" content="https://skmemory.skworld.io/og.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://skmemory.skworld.io/og.png">
@@ -322,10 +321,12 @@
   <!-- NAV — replace the section links with your own site anchors -->
   <nav class="site-nav" role="navigation" aria-label="Main navigation">
     <div class="nav-inner">
-      <a href="/" class="nav-logo">🐧 <span>sk</span>memory</a>
+      <a href="/" class="nav-logo">🐧 <span>SKMemory</span></a>
       <button class="menu-toggle" id="menuToggle" aria-label="Toggle docs menu">☰ Docs</button>
       <ul class="nav-links">
-        <li><a href="https://skmemory.io">Home</a></li>
+        <li><a href="/#tiers">Architecture</a></li>
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#research">Research</a></li>
         <li><a href="/docs.html" class="active">Docs</a></li>
         <li><a href="https://skworld.io">SKWorld</a></li>
         <li><a href="https://github.com/smilinTux/skmemory" target="_blank" rel="noopener">GitHub</a></li>
@@ -352,7 +353,7 @@
 
     <!-- Main -->
     <main class="docs-main">
-      <a href="/" class="doc-back">← skmemory home</a>
+      <a href="/" class="doc-back">← SKMemory home</a>
 
       <div class="doc-toolbar">
         <div class="doc-path" id="docPath"></div>
@@ -389,8 +390,8 @@
     const REPO        = "smilinTux/skmemory";  // public GitHub repo the docs live in
     const BRANCH      = "main";                // branch to render from
     const DOCS_PATH   = "docs";                // folder in the repo holding *.md
-    const DEFAULT_DOC = "PROVENANCE_AND_CLOSURE_DESIGN.md"; // doc shown when no ?doc= param
-    const SITE_LABEL  = "skmemory";            // used in <title> and status text
+    const DEFAULT_DOC = "FORTRESS_SOP.md";     // doc shown when no ?doc= param (e.g. README.md)
+    const SITE_LABEL  = "SKMemory";       // used in <title> and status text
     /* ═════════════════════════════════════════════════════════════════════════════ */
 
     const API_LIST   = `https://api.github.com/repos/${REPO}/contents/${DOCS_PATH}`;
