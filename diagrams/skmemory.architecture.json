@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "SKMemory Component Map",
+    "subtitle": "A three-tier memory store with pluggable storage backends, reached through a CLI, an MCP server, and a Python API",
+    "output": "skmemory.architecture.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "cli",
+      "type": "frontend",
+      "label": "skmemory CLI",
+      "sublabel": "click-based command line",
+      "pos": [
+        30,
+        40
+      ],
+      "size": [
+        200,
+        64
+      ]
+    },
+    {
+      "id": "mcp",
+      "type": "frontend",
+      "label": "skmemory-mcp",
+      "sublabel": "stdio MCP server",
+      "pos": [
+        260,
+        40
+      ],
+      "size": [
+        200,
+        64
+      ]
+    },
+    {
+      "id": "api",
+      "type": "frontend",
+      "label": "Python API",
+      "sublabel": "MemoryStore class",
+      "pos": [
+        490,
+        40
+      ],
+      "size": [
+        200,
+        64
+      ]
+    },
+    {
+      "id": "importers",
+      "type": "external",
+      "label": "Importers",
+      "sublabel": "Telegram API, Cloud 9 seeds",
+      "pos": [
+        700,
+        40
+      ],
+      "size": [
+        210,
+        64
+      ]
+    },
+    {
+      "id": "store",
+      "type": "backend",
+      "label": "MemoryStore",
+      "sublabel": "core orchestrator",
+      "pos": [
+        350,
+        220
+      ],
+      "size": [
+        220,
+        64
+      ]
+    },
+    {
+      "id": "storage",
+      "type": "database",
+      "label": "Storage Backends",
+      "sublabel": "SQLite/JSON primary, Chroma/Qdrant vector, FalkorDB graph",
+      "pos": [
+        30,
+        400
+      ],
+      "size": [
+        260,
+        80
+      ],
+      "tag": "pluggable"
+    },
+    {
+      "id": "services",
+      "type": "backend",
+      "label": "Store Services",
+      "sublabel": "integrity seal, identity, rehydration, routing",
+      "pos": [
+        340,
+        400
+      ],
+      "size": [
+        290,
+        80
+      ]
+    },
+    {
+      "id": "short",
+      "type": "database",
+      "label": "Short-term",
+      "sublabel": "session tier, high volume",
+      "pos": [
+        690,
+        400
+      ],
+      "size": [
+        190,
+        64
+      ]
+    },
+    {
+      "id": "mid",
+      "type": "database",
+      "label": "Mid-term",
+      "sublabel": "project tier, proven relevance",
+      "pos": [
+        690,
+        540
+      ],
+      "size": [
+        200,
+        64
+      ]
+    },
+    {
+      "id": "long",
+      "type": "database",
+      "label": "Long-term",
+      "sublabel": "identity tier, permanent",
+      "pos": [
+        690,
+        680
+      ],
+      "size": [
+        200,
+        64
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Memory tiers (promotion chain)",
+      "wraps": [
+        "short",
+        "mid",
+        "long"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "cli-to-store",
+      "from": "cli",
+      "to": "store",
+      "label": "CLI calls",
+      "variant": "default"
+    },
+    {
+      "id": "mcp-to-store",
+      "from": "mcp",
+      "to": "store",
+      "label": "MCP tool calls",
+      "variant": "default"
+    },
+    {
+      "id": "api-to-store",
+      "from": "api",
+      "to": "store",
+      "label": "Python calls",
+      "variant": "default"
+    },
+    {
+      "id": "importers-to-store",
+      "from": "importers",
+      "to": "store",
+      "label": "ingest",
+      "variant": "dashed"
+    },
+    {
+      "id": "store-to-storage",
+      "from": "store",
+      "to": "storage",
+      "label": "read/write",
+      "variant": "default"
+    },
+    {
+      "id": "store-to-services",
+      "from": "store",
+      "to": "services",
+      "label": "seal, identity, rehydrate, route",
+      "variant": "default"
+    },
+    {
+      "id": "store-to-short",
+      "from": "store",
+      "to": "short",
+      "label": "write",
+      "variant": "default"
+    },
+    {
+      "id": "short-to-mid",
+      "from": "short",
+      "to": "mid",
+      "label": "promote",
+      "variant": "emphasis"
+    },
+    {
+      "id": "mid-to-long",
+      "from": "mid",
+      "to": "long",
+      "label": "promote",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Sovereign by default",
+      "items": [
+        "Flat JSON files are the source of truth, SQLite is a derived local index",
+        "No cloud dependency and no vendor lock-in required to run the store"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Promotion, not curation",
+      "items": [
+        "Memories move short to mid to long automatically by access count and importance score",
+        "Mid-term at 3+ accesses or importance 0.7+, long-term at 10+ accesses or importance 0.9+"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Tamper-evident",
+      "items": [
+        "FortifiedMemoryStore seals each memory at creation and keeps an audit log",
+        "A PGP-encrypted vaulted variant of the primary backend adds encryption at rest"
+      ]
+    }
+  ]
+}
