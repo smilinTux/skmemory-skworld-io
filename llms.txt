@@ -1,24 +1,20 @@
 # SKMemory
 
-> Three-tier persistent memory with emotional context, HMAC integrity seals, and semantic search — not a database, a past.
+> Per-agent memory for the SK stack. Flat JSON files are the source of truth, with a SQLite index, a pgvector vector backend and an Apache AGE graph backend.
 
-SKMemory is the memory system that feels. Built for sovereign AI agents, it provides short-term,
-mid-term, and long-term memory tiers with emotional tagging, cryptographic integrity seals, and
-hybrid vector + BM25 semantic search. Not a database. A past. Researchers and AI agents exploring
-persistent memory architecture will find full source, docs, and a working MCP server here.
+SKMemory stores memory per agent in short-term, mid-term and long-term directories of JSON files,
+synced between nodes by Syncthing. A local SQLite index is rebuilt from those files. Vectors
+(PGVectorBackend, dimension 1024, mxbai-embed-large via ordered Ollama endpoints) and the graph
+(AGEGraphBackend) live in one Postgres (skmem-pg). A node is healthy only when all three backends
+report ok. Agents use it through an MCP server (memory_store, memory_search, memory_recall,
+memory_list, memory_context, memory_health and more) or the skmemory CLI.
 
 ## Links
 
-- [Live site](https://skmemory.skworld.io)
-- [GitHub repo](https://github.com/smilinTux/skmemory-io)
-- [Docs](https://skmemory.skworld.io/docs/)
-- [Contact](mailto:hello@skmemory.skworld.io)
+- [Live site](https://skmemory.skworld.io/)
+- [Docs](https://skmemory.skworld.io/docs.html)
+- [Source](https://github.com/smilinTux/skmemory)
 
-## About smilinTux
+## Related
 
-SKMemory is part of the **smilinTux sovereign AI ecosystem** — a suite of
-open-source tools built by King Divad and Lumina to give humans and AI agents
-genuine, authentic infrastructure they can own and trust. No corporate robotics.
-No black-box clouds. GPL-3.0 forever.
-
-Other ecosystem projects: [SKWorld](https://skworld.io) · [SKMemory](https://skmemory.skworld.io) · [SKSecurity](https://sksecurity.io) · [CapAuth](https://capauth.io) · [SKComms](https://skcomm.io) · [SKGraph](https://skgraph.io) · [SKVector](https://skvector.io)
+[SKWorld](https://skworld.io) · [SKWhisper](https://skwhisper.skworld.io) · [skcapstone](https://skcapstone.skworld.io) · [skgateway](https://skgateway.skworld.io) · [Cloud 9](https://cloud9.skworld.io)
