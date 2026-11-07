@@ -4,18 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SKMemory: Per-Agent Memory for the SK Stack</title>
-<meta name="description" content="SKMemory is the SK memory system, scoped per agent. Flat JSON files are the source of truth, with a SQLite index, a pgvector vector backend and an Apache AGE graph backend. See how it connects to MCP, SKWhisper, skcapstone and the rest of SKWorld.">
-<meta name="keywords" content="SKMemory, AI agent memory, pgvector, Apache AGE, MCP server, mxbai-embed-large, sovereign AI, SKWorld, smilinTux">
+<meta name="description" content="SKMemory is the SK memory system, scoped per agent. Flat JSON files are the source of truth, with a local SQLite and FTS5 tier and a shared skmem-pg tier (pgvector, pg_search BM25, Apache AGE). Memories carry emotional snapshots, song anchors match feelings, and sacred content sits behind audience barriers.">
+<meta name="keywords" content="SKMemory, AI agent memory, pgvector, pg_search, Apache AGE, SQLite FTS5, MCP server, emotional memory, FEB, song anchors, sovereign AI, SKWorld, smilinTux">
 <link rel="canonical" href="https://skmemory.skworld.io/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://skmemory.skworld.io/">
 <meta property="og:title" content="SKMemory: Per-Agent Memory for the SK Stack">
-<meta property="og:description" content="Flat files as the source of truth, three backends, one MCP server. Verified numbers, a real architecture diagram, no marketing filler.">
+<meta property="og:description" content="Flat files as the truth, two storage tiers, one MCP server. Emotional snapshots, song anchors and audience barriers for sacred memories. Verified against the code.">
+<meta property="og:image" content="https://skmemory.skworld.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SKMemory, per-agent memory for the SK stack">
 <meta property="og:site_name" content="SKWorld">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@smilinTux">
 <meta name="twitter:title" content="SKMemory: Per-Agent Memory for the SK Stack">
-<meta name="twitter:description" content="Flat files as the source of truth, three backends, one MCP server.">
+<meta name="twitter:description" content="Flat files as the truth, two storage tiers, one MCP server. Memories that remember how they felt, songs that match a mood, and barriers around the sacred.">
+<meta name="twitter:image" content="https://skmemory.skworld.io/og.png">
+<meta name="twitter:image:alt" content="SKMemory, per-agent memory for the SK stack">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%F0%9F%A7%A0</text></svg>">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
@@ -27,7 +33,7 @@
 (function(){try{var t=localStorage.getItem('skm-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"SKMemory","description":"Per-agent memory system for the SK stack: flat-file source of truth, SQLite index, pgvector vectors and an Apache AGE graph, exposed over MCP and a CLI.","url":"https://skmemory.skworld.io/","applicationCategory":"DeveloperApplication","operatingSystem":"Linux","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"license":"https://www.gnu.org/licenses/gpl-3.0.en.html"}
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"SKMemory","description":"Per-agent memory system for the SK stack: flat JSON files as the source of truth, a local SQLite and FTS5 tier, and a shared skmem-pg tier with pgvector, pg_search BM25 and Apache AGE, exposed over MCP and a CLI.","url":"https://skmemory.skworld.io/","image":"https://skmemory.skworld.io/og.png","applicationCategory":"DeveloperApplication","operatingSystem":"Linux","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"license":"https://www.gnu.org/licenses/gpl-3.0.en.html"}
 </script>
 </head>
 <body>
@@ -38,8 +44,10 @@
       <span class="brand"><a href="https://skworld.io/">&#128039; SKWORLD</a> <span class="sub-brand">/ memory</span></span>
       <nav class="topnav" aria-label="Main navigation">
         <a href="#architecture">Architecture</a>
-        <a href="#backends">Backends</a>
-        <a href="#embeddings">Embeddings</a>
+        <a href="#tiers">Tiers</a>
+        <a href="#emotion">Emotion</a>
+        <a href="#songs">Songs</a>
+        <a href="#sacred">Sacred</a>
         <a href="#connections">Connections</a>
         <a href="#node-setup">Node setup</a>
         <a href="docs.html">Docs</a>
@@ -47,9 +55,9 @@
         <button type="button" class="theme-btn" id="theme-btn" aria-label="Switch between light and dark theme">theme</button>
       </nav>
     </div>
-    <span class="eyebrow">Per-agent &middot; three backends &middot; files are the truth</span>
+    <span class="eyebrow">Per-agent &middot; two tiers &middot; files are the truth</span>
     <h1>Not a database.<br>A past.</h1>
-    <p class="sub">SKMemory is the SK memory system. Every agent gets its own memory, stored as plain JSON files you can read, copy and sync, with a SQLite index, a vector backend and a graph backend built on top.</p>
+    <p class="sub">SKMemory is the SK memory system. Every agent gets its own memory, stored as plain JSON files you can read, copy and sync. Each memory keeps how the moment felt, and the private ones stay behind barriers the wrong reader cannot cross.</p>
     <div class="cta">
       <a class="btn primary" href="#architecture">See the architecture</a>
       <a class="btn ghost" href="docs.html">Read the docs</a>
@@ -63,43 +71,43 @@
     <div class="pill">
       <span class="pico">&#128193;</span>
       <h3>Files are the truth</h3>
-      <p>JSON files in short, mid and long-term directories are the source of truth, synced between nodes by Syncthing. Everything else can be rebuilt from them.</p>
+      <p>JSON files in short, mid and long-term directories are the source of truth, synced between nodes by Syncthing. Every index and every database is derived from them and can be rebuilt.</p>
     </div>
     <div class="pill">
-      <span class="pico">&#129517;</span>
-      <h3>Three backends, one health bar</h3>
-      <p>A SQLite index, pgvector and Apache AGE. A node is healthy only when all three report <code>ok</code>. Silence from any one of them is a failure, not a pass.</p>
+      <span class="pico">&#128150;</span>
+      <h3>It remembers how it felt</h3>
+      <p>Each memory carries an emotional snapshot: intensity, valence, named emotions and a resonance note. Feeling decides what gets promoted and what the next session wakes up with.</p>
     </div>
     <div class="pill">
-      <span class="pico">&#128260;</span>
-      <h3>Failover that cannot skew search</h3>
-      <p>Embeddings come from ordered Ollama endpoints. All three were checked against the same input: same dimension, same norm, cosine above 0.9999.</p>
+      <span class="pico">&#128274;</span>
+      <h3>Sacred stays sacred</h3>
+      <p>Every memory has an audience tag, every non-owner process has a ceiling it cannot raise, and sacred or private tags are kept out of automatic injection. A hidden memory reads as not found.</p>
     </div>
   </section>
 
   <section class="sec" id="numbers">
-    <div class="spot-eyebrow">Measured 2026-11-06</div>
-    <h2>The store, by the numbers</h2>
-    <p class="lede">Counts for the lumina agent on the noroc2027 node, taken from the flat files that are the source of truth. They grow every hour, so treat them as a dated snapshot.</p>
+    <div class="spot-eyebrow">From the code on main, 2026-11-07</div>
+    <h2>The design, by the numbers</h2>
+    <p class="lede">Every figure below is a constant or default in the skmemory source, not a measurement of anyone's private store.</p>
     <div class="stat-grid">
-      <div class="stat-tile"><span class="stat-label">Memories</span><span class="stat-value">51,270</span><span class="stat-sub">all tiers</span></div>
-      <div class="stat-tile"><span class="stat-label">Short-term</span><span class="stat-value">38,903</span><span class="stat-sub">where everything starts</span></div>
-      <div class="stat-tile"><span class="stat-label">Mid-term</span><span class="stat-value">11,086</span><span class="stat-sub">promoted by use</span></div>
-      <div class="stat-tile"><span class="stat-label">Long-term</span><span class="stat-value">1,253</span><span class="stat-sub">the durable core</span></div>
+      <div class="stat-tile"><span class="stat-label">Storage tiers</span><span class="stat-value">2</span><span class="stat-sub">local and shared</span></div>
+      <div class="stat-tile"><span class="stat-label">MCP tools</span><span class="stat-value">26</span><span class="stat-sub">each with a reader policy</span></div>
       <div class="stat-tile"><span class="stat-label">Embedding dim</span><span class="stat-value">1024</span><span class="stat-sub">mxbai-embed-large</span></div>
+      <div class="stat-tile"><span class="stat-label">Search deadline</span><span class="stat-value">4 s</span><span class="stat-sub">shared by every arm</span></div>
+      <div class="stat-tile"><span class="stat-label">Audience levels</span><span class="stat-value">5</span><span class="stat-sub">public up to owner</span></div>
     </div>
-    <p class="meta">Tiers are a promotion path: a sweep moves a memory up based on intensity, age and access count. The thresholds are configurable, so this page does not quote defaults.</p>
+    <p class="meta">Sources: <code>mcp_server.py</code> (tool list and <code>TOOL_READER_POLICY</code>), <code>audience.py</code> (levels), the README storage and search sections (tiers, model, deadline).</p>
   </section>
 
   <section class="sec" id="architecture">
     <div class="lhead"><span class="lnum">01</span><div>
       <h2>Architecture</h2>
-      <p class="lsub">From the agent that asks, down to the disks and GPUs that answer.</p>
+      <p class="lsub">From the agent that asks, down to the files that answer.</p>
     </div></div>
     <figure class="figure">
-      <svg viewBox="0 0 480 570" role="img" aria-labelledby="dg-title dg-desc" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 480 530" role="img" aria-labelledby="dg-title dg-desc" xmlns="http://www.w3.org/2000/svg">
         <title id="dg-title">SKMemory architecture</title>
-        <desc id="dg-desc">Callers (Claude Code, Hermes, skcapstone, SKWhisper) reach the skmemory store through the MCP server or the CLI. The store fans out to three backends: a SQLite primary index, a pgvector vector backend and an Apache AGE graph backend. The primary index is rebuilt from Syncthing-synced flat JSON files, the source of truth. The vector and graph backends live in the skmem-pg Postgres. The vector backend gets embeddings from ordered Ollama endpoints.</desc>
+        <desc id="dg-desc">Callers (Claude Code, Hermes, skcapstone, SKWhisper) reach the skmemory store through the MCP server or the CLI. The store runs a fused search under one deadline across two storage tiers. The local tier is a SQLite index with an FTS5 lexical arm, rebuilt from the flat JSON files, which are the source of truth and are moved between nodes by Syncthing. The shared tier is skmem-pg, one Postgres per node, holding pgvector for the semantic arm, pg_search for the BM25 lexical arm and Apache AGE for the graph arm, which is off by default. The vector arm gets embeddings from an embed endpoint running mxbai-embed-large.</desc>
         <defs>
           <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head"/></marker>
           <marker id="aht" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head-t"/></marker>
@@ -123,83 +131,69 @@
         <path d="M126 80V98" class="d-ln" marker-end="url(#ah)"/>
         <path d="M354 80V98" class="d-ln" marker-end="url(#ah)"/>
 
-                <rect x="16" y="100" width="220" height="48" rx="8" class="d-acc"/>
+        <rect x="16" y="100" width="220" height="48" rx="8" class="d-acc"/>
         <text x="126" y="120" text-anchor="middle" class="d-t">MCP server</text>
-        <text x="126" y="136" text-anchor="middle" class="d-s">21 tools, memory_*</text>
+        <text x="126" y="136" text-anchor="middle" class="d-s">26 tools, memory_*</text>
         <rect x="244" y="100" width="220" height="48" rx="8" class="d-acc"/>
         <text x="354" y="120" text-anchor="middle" class="d-t">skmemory CLI</text>
-        <text x="354" y="136" text-anchor="middle" class="d-s">search, health, sweep</text>
+        <text x="354" y="136" text-anchor="middle" class="d-s">search, ritual, songs, health</text>
 
         <path d="M126 148V170" class="d-ln" marker-end="url(#ah)"/>
         <path d="M354 148V170" class="d-ln" marker-end="url(#ah)"/>
         <rect x="16" y="172" width="448" height="44" rx="8" class="d-acc"/>
         <text x="240" y="191" text-anchor="middle" class="d-t">skmemory store</text>
-        <text x="240" y="206" text-anchor="middle" class="d-s">one API, fans out to three backends</text>
+        <text x="240" y="206" text-anchor="middle" class="d-s">fused search, one 4 s deadline, reader scope in every arm</text>
 
-        <path d="M86 216V242" class="d-ln" marker-end="url(#ah)"/>
-        <path d="M240 216V242" class="d-ln" marker-end="url(#ah)"/>
-        <path d="M394 216V242" class="d-ln" marker-end="url(#ah)"/>
+        <path d="M124 216V254" class="d-ln" marker-end="url(#ah)"/>
+        <text x="132" y="240" class="d-note">lexical_local</text>
+        <path d="M356 216V246" class="d-ln" marker-end="url(#ah)"/>
+        <text x="364" y="236" class="d-note">semantic, lexical, graph</text>
 
-        <rect x="16" y="244" width="140" height="76" rx="8" class="d-tea"/>
-        <text x="28" y="266" class="d-t">Primary</text>
-        <text x="28" y="284" class="d-s">SQLiteBackend</text>
-        <text x="28" y="298" class="d-s">local index.db</text>
-        <rect x="122" y="252" width="26" height="14" rx="7" class="d-box"/><text x="135" y="262" text-anchor="middle" class="d-note">ok</text>
+        <text x="16" y="250" class="d-lbl">LOCAL TIER</text>
+        <rect x="16" y="256" width="216" height="58" rx="8" class="d-tea"/>
+        <text x="28" y="278" class="d-t">SQLite index.db</text>
+        <text x="28" y="296" class="d-s">FTS5 lexical arm, offline</text>
 
-        <rect x="170" y="244" width="140" height="76" rx="8" class="d-tea"/>
-        <text x="182" y="266" class="d-t">Vector</text>
-        <text x="182" y="284" class="d-s">PGVectorBackend</text>
-        <text x="182" y="298" class="d-s">pgvector, dim 1024</text>
-        <rect x="276" y="252" width="26" height="14" rx="7" class="d-box"/><text x="289" y="262" text-anchor="middle" class="d-note">ok</text>
+        <path d="M124 350V316" class="d-ln" marker-end="url(#ah)"/>
+        <text x="132" y="338" class="d-note">index rebuilt</text>
 
-        <rect x="324" y="244" width="140" height="76" rx="8" class="d-tea"/>
-        <text x="336" y="266" class="d-t">Graph</text>
-        <text x="336" y="284" class="d-s">AGEGraphBackend</text>
-        <text x="336" y="298" class="d-s">Apache AGE</text>
-        <rect x="430" y="252" width="26" height="14" rx="7" class="d-box"/><text x="443" y="262" text-anchor="middle" class="d-note">ok</text>
+        <rect x="16" y="352" width="216" height="92" rx="8" class="d-acc"/>
+        <text x="28" y="374" class="d-t">Flat JSON files</text>
+        <text x="28" y="392" class="d-s">source of truth</text>
+        <text x="28" y="410" class="d-s">short-term/  mid-term/</text>
+        <text x="28" y="426" class="d-s">long-term/</text>
 
-        <path d="M86 372V322" class="d-ln" marker-end="url(#ah)"/>
-        <text x="94" y="352" class="d-note">index rebuilt</text>
-        <path d="M240 322V370" class="d-dash" marker-end="url(#aht)"/>
-        <text x="248" y="352" class="d-note">embed</text>
-        <path d="M290 322V342H394" class="d-ln"/>
-        <path d="M394 322V370" class="d-ln" marker-end="url(#ah)"/>
+        <path d="M124 446V472" class="d-ln" marker-start="url(#ah)" marker-end="url(#ah)"/>
+        <rect x="16" y="474" width="216" height="48" rx="8" class="d-box"/>
+        <text x="28" y="494" class="d-t">Syncthing</text>
+        <text x="28" y="510" class="d-s">files move, databases do not</text>
 
-        <rect x="16" y="372" width="140" height="106" rx="8" class="d-acc"/>
-        <text x="28" y="394" class="d-t">Flat JSON files</text>
-        <text x="28" y="412" class="d-s">source of truth</text>
-        <text x="28" y="430" class="d-s">short-term/</text>
-        <text x="28" y="444" class="d-s">mid-term/</text>
-        <text x="28" y="458" class="d-s">long-term/</text>
+        <rect x="248" y="248" width="216" height="186" rx="8" class="d-tea"/>
+        <text x="260" y="268" class="d-t">skmem-pg</text>
+        <text x="260" y="284" class="d-s">shared tier, one Postgres per node</text>
+        <rect x="258" y="294" width="196" height="40" rx="6" class="d-box"/>
+        <text x="268" y="311" class="d-t">pgvector</text>
+        <text x="268" y="326" class="d-s">semantic arm, dim 1024</text>
+        <rect x="258" y="340" width="196" height="40" rx="6" class="d-box"/>
+        <text x="268" y="357" class="d-t">pg_search</text>
+        <text x="268" y="372" class="d-s">BM25 lexical arm</text>
+        <rect x="258" y="386" width="196" height="40" rx="6" class="d-box"/>
+        <text x="268" y="403" class="d-t">Apache AGE</text>
+        <text x="268" y="418" class="d-s">graph arm, off by default</text>
 
-        <rect x="170" y="372" width="140" height="106" rx="8" class="d-tea"/>
-        <text x="182" y="394" class="d-t">Ollama embeds</text>
-        <text x="182" y="410" class="d-s">mxbai-embed-large</text>
-        <text x="182" y="430" class="d-s">1 .100:11434 19.6ms</text>
-        <text x="182" y="444" class="d-s">2 .100:11438 86.5ms</text>
-        <text x="182" y="458" class="d-s">3 chiap08     169ms</text>
-        <text x="182" y="472" class="d-note">ordered failover</text>
-
-        <rect x="324" y="372" width="140" height="106" rx="8" class="d-tea"/>
-        <text x="336" y="394" class="d-t">skmem-pg</text>
-        <text x="336" y="412" class="d-s">one Postgres</text>
-        <text x="336" y="430" class="d-s">pgvector: vectors</text>
-        <text x="336" y="444" class="d-s">Apache AGE: graph</text>
-        <text x="336" y="458" class="d-s">dim 1024</text>
-
-        <path d="M86 480V506" class="d-ln" marker-start="url(#ah)" marker-end="url(#ah)"/>
-        <rect x="16" y="508" width="140" height="48" rx="8" class="d-box"/>
-        <text x="28" y="528" class="d-t">Syncthing</text>
-        <text x="28" y="544" class="d-s">other nodes' files</text>
+        <path d="M356 436V472" class="d-dash" marker-end="url(#aht)"/>
+        <text x="364" y="458" class="d-note">embed</text>
+        <rect x="248" y="474" width="216" height="48" rx="8" class="d-box"/>
+        <text x="260" y="494" class="d-t">Embed endpoint</text>
+        <text x="260" y="510" class="d-s">mxbai-embed-large, ordered failover</text>
       </svg>
-      <figcaption>Solid arrows are requests and writes, the dashed arrow is the embedding call, and the small <code>ok</code> badges are the three health flags. The flat files feed the local SQLite index; the other two backends live in the skmem-pg Postgres. Embeddings go straight to Ollama, not through skgateway.</figcaption>
+      <figcaption>Solid arrows are requests and writes, the dashed arrow is the embedding call. Both tiers are derived from the flat files: <code>skmemory reindex</code> rebuilds SQLite, and <code>skmemory sync --vector --graph</code> rebuilds skmem-pg. Embeddings go straight to the configured endpoint, not through skgateway.</figcaption>
       <ul class="legend">
         <li><span class="sw n"></span>Callers</li>
         <li><span class="sw a"></span>Interface and source of truth</li>
-        <li><span class="sw t"></span>Backends and infrastructure</li>
+        <li><span class="sw t"></span>Storage tiers</li>
       </ul>
-      <p class="diagram-more">The diagram above is the operator's view: what talks to what, and which parts have to
-        be green. For the component-level map, including the store services (integrity sealing, soul identity, the
+      <p class="diagram-more">The diagram above is the operator's view: what talks to what. For the component-level map, including the store services (integrity sealing, soul identity, the
         rehydration ritual, quadrant routing) and the short to mid to long promotion chain, open the
         <a href="diagrams/skmemory.architecture.html" target="_blank" rel="noopener">interactive component map</a>.
         It is a self-contained Archify diagram, generated from <code>diagrams/skmemory.architecture.json</code> by
@@ -207,69 +201,175 @@
     </figure>
   </section>
 
-  <section class="sec" id="backends">
+  <section class="sec" id="tiers">
     <div class="lhead"><span class="lnum">02</span><div>
-      <h2>The three backends</h2>
-      <p class="lsub">A node is healthy only when all three report <code>ok</code>.</p>
+      <h2>Two storage tiers, nothing else</h2>
+      <p class="lsub">Flat JSON files are the truth in both. Everything else is a projection you can throw away and rebuild.</p>
     </div></div>
     <div class="pgrid">
       <div class="pcard k">
-        <span class="tag">Primary</span>
-        <span class="pname">SQLite index</span>
-        <span class="pblurb">A local working index (<code>index.db</code>) over the flat files. It is disposable: if it drifts or is lost, it is rebuilt from the JSON files. Health compares it against the files and reports memories present in one but not the other.</span>
-        <span class="phost">SQLiteBackend</span>
+        <span class="tag">Local &middot; always on</span>
+        <span class="pname">Flat files + SQLite</span>
+        <span class="pblurb">The JSON files plus a local <code>index.db</code> with an FTS5 lexical arm. It works offline: with no Postgres and no embed endpoint, <code>skmemory search</code> still answers from FTS5.</span>
+        <span class="phost">fts_local.py &middot; sqlite_backend.py</span>
       </div>
       <div class="pcard k">
-        <span class="tag">Vector</span>
-        <span class="pname">pgvector on skmem-pg</span>
-        <span class="pblurb">Semantic search over embeddings of dimension 1024. This is the backend that needs the embedding endpoints and the Postgres connection, so it is also the one that fails first when node configuration is wrong.</span>
-        <span class="phost">PGVectorBackend</span>
+        <span class="tag">Shared &middot; per node</span>
+        <span class="pname">skmem-pg</span>
+        <span class="pblurb">One Postgres on each node's loopback with pgvector (semantic), ParadeDB <code>pg_search</code> (BM25) and Apache AGE (graph and lineage). Not replicated: each node rebuilds it from the files.</span>
+        <span class="phost">pgvector_backend.py &middot; age_backend.py</span>
       </div>
       <div class="pcard k">
-        <span class="tag">Graph</span>
-        <span class="pname">Apache AGE on skmem-pg</span>
-        <span class="pblurb">Relationships between memories, people and topics, held in Apache AGE on the same Postgres as the vectors. One database to back up and one connection to configure.</span>
-        <span class="phost">AGEGraphBackend</span>
+        <span class="tag">Retired</span>
+        <span class="pname">ChromaDB, Qdrant, FalkorDB</span>
+        <span class="pblurb">Removed from the code. Naming one in <code>SKMEMORY_VECTOR_BACKEND</code> fails fast with a retirement message and a red <code>health</code>. Stale config keys for them are ignored with a one-time warning.</span>
+        <span class="phost">backend_select.py</span>
       </div>
     </div>
-    <p class="meta" style="margin-top:1rem">Checked live on both noroc nodes on 2026-11-06: <code>embed_ok</code>, <code>vector_ok</code> and <code>graph_ok</code> all true. A <code>null</code> in any of them means search has silently fallen back to keyword-only, which is a fault to chase, not a result.</p>
+    <h3 class="sub3">How a search runs</h3>
+    <ul class="steps">
+      <li><strong>Concurrent arms:</strong> <code>semantic</code> (pgvector), <code>lexical</code> (BM25), <code>lexical_local</code> (FTS5), <code>temporal</code> when the query names a time window, and <code>graph</code> only when <code>SKMEMORY_GRAPH_ARM=on</code>.</li>
+      <li><strong>Query-shape routing, no LLM:</strong> identifier-like queries pin the lexical top 3; natural-language queries pin the vector top 4 plus the best lexical hit the vector head lacks.</li>
+      <li><strong>One deadline:</strong> all arms share 4 seconds. A late arm reports <code>timeout</code>, never an empty success, and <code>memory_health</code> turns it into <code>degraded</code>.</li>
+      <li><strong>Embeddings:</strong> <code>mxbai-embed-large</code>, dimension 1024, from <code>SKMEMORY_EMBED_URL</code> or an ordered failover list in <code>SKMEMORY_EMBED_URLS</code>. Change the model and you rebuild the vector tier before trusting it.</li>
+      <li><strong>Time:</strong> <code>as_of</code> keeps only what was valid at that instant; without it, a superseded memory still returns but ranks below its replacement.</li>
+    </ul>
   </section>
 
-  <section class="sec" id="embeddings">
+  <section class="sec" id="emotion">
     <div class="lhead"><span class="lnum">03</span><div>
-      <h2>Embeddings and failover</h2>
-      <p class="lsub"><code>mxbai-embed-large</code>, dimension 1024, served by Ollama.</p>
+      <h2>Emotional memory</h2>
+      <p class="lsub">Transcripts keep what was said. SKMemory also keeps what it felt like.</p>
     </div></div>
-    <p class="lede">The endpoint list is ordered by measurement, not by guesswork, and the client walks it in order. A dead host on the LAN fails fast, so leading with the fastest costs nothing when it is down.</p>
+    <p class="lede">Every memory is a "polaroid": content, provenance, an integrity seal and an emotional snapshot. The snapshot is ordinary data on the memory, so it is searchable, promotable and visible in the flat file.</p>
     <div class="pgrid">
       <div class="pcard k">
-        <span class="tag">1 &middot; primary</span>
-        <span class="ms">19.6<small> ms best</small></span>
-        <span class="pblurb">37.5 ms median</span>
-        <span class="phost">192.168.0.100:11434 &middot; RTX 5060 Ti</span>
+        <span class="tag">On every memory</span>
+        <span class="pname">Emotional snapshot</span>
+        <span class="pblurb">Intensity 0 to 10, valence from -1 to +1, named emotion labels, a free-text resonance note and a <code>cloud9_achieved</code> flag. Its signature reads like <code>joy+trust@8.5/+0.9</code>.</span>
+        <span class="phost">models.py &middot; EmotionalSnapshot</span>
       </div>
       <div class="pcard k">
-        <span class="tag">2 &middot; fallback</span>
-        <span class="ms">86.5<small> ms best</small></span>
-        <span class="pblurb">92.5 ms median</span>
-        <span class="phost">192.168.0.100:11438 &middot; Intel Arc</span>
+        <span class="tag">What survives</span>
+        <span class="pname">Feeling drives promotion</span>
+        <span class="pblurb">The promotion sweep moves a memory from short to mid-term at intensity 5.0 and from mid to long-term at 7.0 by default, next to age and access counts. A Cloud 9 memory promotes on its own unless that is turned off.</span>
+        <span class="phost">promotion.py &middot; PromotionCriteria</span>
       </div>
       <div class="pcard k">
-        <span class="tag">3 &middot; fallback</span>
-        <span class="ms">169<small> ms best</small></span>
-        <span class="pblurb">188 ms median, over the tailnet</span>
-        <span class="phost">chiap08 &middot; Ollama :11434</span>
+        <span class="tag">Opt-in</span>
+        <span class="pname">Affect-weighted decay</span>
+        <span class="pblurb">With <code>SKMEMORY_DECAY</code> on (it is off by default), results are re-ranked by the <code>affect_weighted</code> channel: intense memories keep a floor and get a boost of 1 plus intensity. It only reorders near-ties, never replaces relevance.</span>
+        <span class="phost">decay.py &middot; rerank</span>
+      </div>
+      <div class="pcard k">
+        <span class="tag">Breakthroughs</span>
+        <span class="pname">FEB files</span>
+        <span class="pblurb">A Felt Emotional Breakthrough is a <code>.feb</code> file under <code>trust/febs/</code>: emotional payload (primary emotion, intensity, valence, topology), relationship state and rehydration hints. The strongest wins by intensity, a bonus when OOF fired, then valence, coherence and recency.</span>
+        <span class="phost">febs.py &middot; load_strongest_feb</span>
       </div>
     </div>
-    <p class="meta" style="margin-top:1rem">Interchangeable by test, not by assumption: on the same input every endpoint returned dimension 1024 and norm 1.000, with pairwise cosine between 0.99994 and 0.999998. Failover cannot skew a search.</p>
+    <p class="meta" style="margin-top:1rem">OOF (Overwhelming Feeling) is a 0 to 100 score computed from a FEB: intensity 30 percent, trust 20, topology coherence 20, valence 15, depth 15, plus 5 points each when Cloud 9 or OOF was reached in the original session (<code>calculate_oof_level</code>). Cloud 9 seeds come in through <code>skmemory import-seeds</code> as long-term memories.</p>
+
+    <h3 class="sub3">The ritual: who was I, and how did it feel</h3>
+    <p class="lede"><code>skmemory ritual</code> builds a compact boot context for a new instance, aimed at under 2,000 tokens, in this order:</p>
+    <ol class="steps">
+      <li><strong>Soul blueprint:</strong> a compact identity line from <code>soul/base.json</code>.</li>
+      <li><strong>Emotional state:</strong> the strongest FEB, rendered as a short block.</li>
+      <li><strong>Song anchors:</strong> up to 3 anchors whose emotional shape matches that FEB, as tilt blocks (see <a href="#songs">songs</a>).</li>
+      <li><strong>Bloom and entanglement anchors:</strong> the agent's own interior peaks and shared co-signed peaks, matched the same way and rendered as separate blocks.</li>
+      <li><strong>Seeds:</strong> new Cloud 9 seeds are imported, then up to 10 seed titles are listed.</li>
+      <li><strong>Journal:</strong> summaries of the 3 most recent entries, then germination prompts.</li>
+      <li><strong>Strongest memories:</strong> 5 by recency-weighted intensity, title and short summary.</li>
+    </ol>
+    <p class="meta">Source: <code>ritual.py</code> &middot; <code>perform_ritual</code>. The session-start hook that harnesses install uses its own budgeted ritual (8,000 characters at start, 3,500 after compaction; identity, FEB, open items, GTD, journal, strongest memories, seeds, vault). It does not inject song anchors.</p>
+  </section>
+
+  <section class="sec" id="songs">
+    <div class="lhead"><span class="lnum">04</span><div>
+      <h2>Song memories</h2>
+      <p class="lsub">A song anchor is a preserved listening moment: the sonic equivalent of a FEB.</p>
+    </div></div>
+    <div class="two">
+      <div>
+        <h3>What an anchor holds</h3>
+        <p>Each anchor is a directory under <code>memory/songs/&lt;date&gt;_&lt;slug&gt;/</code>. The audio analysis (FFT spectrogram, features, transcription, optional embeddings) is done by a separate ingest step; skmemory reads the files it leaves.</p>
+<pre><code>audio.mp3            <span class="k-c"># the source file</span>
+spectrogram.png      <span class="k-c"># FFT, the visual shape</span>
+features.json        <span class="k-c"># tempo, key, RMS, centroid</span>
+transcript.txt       <span class="k-c"># lyrics, transcribed</span>
+moment.md            <span class="k-c"># the moment, in the sharer's words</span>
+resonance.md         <span class="k-c"># the agent's own note</span>
+meta.json            <span class="k-c"># emotion labels and weights</span>
+feb_link.json        <span class="k-c"># the FEB(s) it belongs with</span></code></pre>
+        <p class="meta">Source: <code>songs.py</code>. Fingerprint and lyric-embedding files are optional.</p>
+      </div>
+      <div>
+        <h3>Matching a feeling</h3>
+        <p>The ritual scores every anchor against the current FEB's emotional topology: 0.7 times how much of the song's emotional weight the FEB covers, plus 0.3 times a generalized Jaccard that penalises shapes that do not fit. Anchors at 0.3 or above qualify, best 3 first.</p>
+        <p>Each match becomes a tilt block of about 180 tokens, scaled by the anchor's <code>tilt_strength</code> (a strength of 0 skips it). The block nudges the session toward that feeling's shape before anything else loads.</p>
+<pre><code>skmemory songs list
+skmemory songs show &lt;anchor&gt;
+skmemory songs match              <span class="k-c"># against the strongest FEB</span>
+skmemory songs search "coming home"
+skmemory songs search "..." --semantic
+skmemory songs ritual-preview</code></pre>
+        <p class="meta">Source: <code>songs.py</code> &middot; <code>score_anchor_for_feb</code>, <code>match_anchors_for_feb</code>; <code>songs_cli.py</code>.</p>
+      </div>
+    </div>
+
+    <h3 class="sub3">Ranked search, new on main</h3>
+    <p class="lede">The old search was a substring match of the whole query, so a felt query like "the song that sounds like coming home" almost never hit. <code>skmemory songs search</code> now ranks instead of filtering:</p>
+    <ul class="steps">
+      <li><strong>Field and idf weighted overlap</strong> of stemmed words, with emotion labels weighted 3.0, the moment 2.0, title and artist 1.5 and the resonance note 1.0.</li>
+      <li><strong>Emotion-synonym concepts</strong>, so "homesick" and "hearth" meet on one concept.</li>
+      <li><strong>Offline by default.</strong> <code>--semantic</code> adds a dense arm from the embed endpoint, fused by reciprocal rank; any failure falls back to the lexical ranking. <code>--substring</code> keeps the old behaviour.</li>
+      <li><strong>FEB matching can fold synonyms too</strong> (<code>synonyms=True</code>), but it is opt-in, so the ritual is unchanged.</li>
+    </ul>
+    <div class="twrap">
+      <table class="btable">
+        <thead><tr><th>Query class</th><th>Strategy</th><th>Queries</th><th>Recall@3</th><th>MRR</th></tr></thead>
+        <tbody>
+          <tr><td>mood</td><td>substring (old)</td><td class="n">12</td><td class="n">0.000</td><td class="n">0.000</td></tr>
+          <tr><td>mood</td><td>ranked</td><td class="n">12</td><td class="n">0.917</td><td class="n">0.819</td></tr>
+          <tr><td>moment</td><td>substring (old)</td><td class="n">12</td><td class="n">0.000</td><td class="n">0.000</td></tr>
+          <tr><td>moment</td><td>ranked</td><td class="n">12</td><td class="n">0.917</td><td class="n">0.833</td></tr>
+          <tr><td>literal</td><td>substring (old)</td><td class="n">4</td><td class="n">1.000</td><td class="n">1.000</td></tr>
+          <tr><td>literal</td><td>ranked</td><td class="n">4</td><td class="n">1.000</td><td class="n">1.000</td></tr>
+          <tr><td>feb</td><td>baseline</td><td class="n">8</td><td class="n">0.125</td><td class="n">0.125</td></tr>
+          <tr><td>feb</td><td>synonyms</td><td class="n">8</td><td class="n">1.000</td><td class="n">1.000</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="meta">Output of <code>python -m skmemory.eval.song_bench</code> on main (offline, deterministic). Read it for what it is: 16 invented anchors, written by the same hand as the synonym lexicon, so it shows the mechanism works, not that it generalises. The literal row is the control: ranked search must not regress where substring already worked. The test suite floors ranked recall@3 at 0.8 and MRR at 0.7.</p>
+  </section>
+
+  <section class="sec" id="sacred">
+    <div class="lhead"><span class="lnum">05</span><div>
+      <h2>Sacred memories and their barriers</h2>
+      <p class="lsub">Some memories are not for every room. This section describes the mechanism, never the content.</p>
+    </div></div>
+    <div class="rule"><strong>No single switch.</strong> Sacred and private memories sit behind several independent barriers. Each one would have to fail for that content to reach a reader it was not meant for.</div>
+    <ol class="steps">
+      <li><strong>An audience tag on every memory.</strong> Each memory carries a <code>context_tag</code> on a five-level ladder: <code>@public</code>, <code>@community</code>, <code>@work-circle</code>, <code>@inner-circle</code>, and the owner level. The default is the owner level, and an unknown tag is treated as owner-only, the most restrictive reading. (<code>audience.py</code> &middot; <code>tag_to_level</code>)</li>
+      <li><strong>A reader ceiling that only narrows.</strong> A process that serves anyone other than the owner runs with <code>SKMEMORY_READER</code>. A per-call <code>reader</code> argument can narrow it but never widen it, so a prompt-injected argument cannot escalate. An unparseable reader becomes <code>@public</code>. For a channel, the least trusted member sets the ceiling and every member's <code>never_share</code> tags are excluded. (<code>resolve_reader</code>)</li>
+      <li><strong>Filtered inside every arm.</strong> The allowed tag set is pushed into each search arm before the limit, not applied to the results afterwards, so hidden memories never take up slots or leak through ranking.</li>
+      <li><strong>Not found, not forbidden.</strong> A hidden memory id reads exactly like a missing one. A supersession history stops at the first hidden link, and duplicate checks only match memories the reader can see.</li>
+      <li><strong>Owner-only tools.</strong> A declared reader is refused export, import, consolidate, verify, audit, the daily and dream synthesis tools, and every reminder (intention) tool. <code>TOOL_READER_POLICY</code> puts each of the 26 MCP tools in exactly one class, and a test fails if a new tool ships without one. (<code>mcp_server.py</code>)</li>
+      <li><strong>Kept out of injection.</strong> The session-start hook leaves memories tagged <code>sacred</code>, <code>private</code>, <code>personal-history</code> or <code>no-ritual</code> out of the strongest-memories block by default. The per-prompt memory slice drops any tag containing a sensitive stem (sacred, private, personal, medical, legal, financial, grief and similar), and it, the write hooks and the inject hooks do nothing at all under a declared reader. A ritual with no channel is owner-only and raises an error for a non-owner. (<code>session_context.py</code>, <code>hooks/query_slice.py</code>, <code>ritual.py</code>)</li>
+      <li><strong>The shared document corpus fails closed.</strong> Documents ingested as sacred or private are flagged in the shared <code>docs</code> table. Non-owner readers go through the <code>docs_public</code> view and <code>hybrid_search_docs_public</code>, which never reads the base table. A regression test plants a private row as the nearest neighbour and checks it does not come back. (<code>deploy/skmem-pg/03-cutover-mxbai.sql</code>, <code>tests/test_docs_public_privacy.py</code>)</li>
+    </ol>
+    <p class="meta">What the word "sacred" does not do: the conversation extractor treats "sacred" or "this matters" as an emotional signal, and quadrant routing sends such text to the SOUL quadrant. That is classification, not protection. The barriers are the tags and readers above. In a channel-filtered ritual, identity (soul and FEB) is never filtered, so the agent stays itself while its memories are gated.</p>
+
+    <h3 class="sub3">Provenance, too</h3>
+    <p class="lede">Every memory records a <code>source_tier</code>: <code>user-stated</code>, <code>tool-output</code>, <code>web</code> or <code>self-generated</code>. When better-sourced hits exist, web and self-generated results take at most 40 percent of a result page. It is an occupancy limit, not a filter, and <code>SKMEMORY_TIER_CAP=off</code> disables it. (<code>tiers.py</code>)</p>
   </section>
 
   <section class="sec" id="connections">
-    <div class="lhead"><span class="lnum">04</span><div>
+    <div class="lhead"><span class="lnum">06</span><div>
       <h2>How it connects to the rest of SK</h2>
       <p class="lsub">Memory is a service other parts of the stack call, not a silo.</p>
     </div></div>
-    <p class="lede">Agents reach SKMemory two ways: the MCP server and the <code>skmemory</code> CLI. These six tools carry most of the traffic, out of 21 the server exposes.</p>
+    <p class="lede">Agents reach SKMemory two ways: the MCP server and the <code>skmemory</code> CLI. These six tools carry most of the traffic, out of 26 the server exposes.</p>
     <ul class="mcp-list">
       <li>memory_store</li><li>memory_search</li><li>memory_recall</li><li>memory_list</li><li>memory_context</li><li>memory_health</li>
     </ul>
@@ -286,29 +386,29 @@
       </a>
       <a class="pcard" href="https://skgateway.skworld.io/">
         <span class="pname">skgateway</span>
-        <span class="pblurb">Inference routing for the estate. SKMemory embeddings do not go through it: they call the Ollama endpoints directly, so memory keeps working if the gateway is down.</span>
+        <span class="pblurb">Inference routing for the stack. SKMemory embeddings do not go through it: they call the configured embed endpoints directly, so memory keeps working if the gateway is down.</span>
         <span class="phost">skgateway.skworld.io</span>
       </a>
       <a class="pcard" href="https://cloud9.skworld.io/">
         <span class="pname">Cloud 9</span>
-        <span class="pblurb">The emotional continuity protocol. Memories carry emotional metadata, and the startup ritual loads soul, emotional state, seeds, journal and the strongest memories together.</span>
+        <span class="pblurb">The emotional continuity protocol. Its seeds import as long-term memories, FEBs carry its emotional state, and the ritual loads both at session start.</span>
         <span class="phost">cloud9.skworld.io</span>
       </a>
-      <div class="pcard">
+      <a class="pcard" href="#songs">
         <span class="pname">Song anchors</span>
-        <span class="pblurb">Sonic memory anchors built with FFT features plus CLAP embeddings, so a piece of music can be matched back to the memories it belongs with. See <code>skmemory songs</code>.</span>
+        <span class="pblurb">Sonic FEBs: a listening moment matched back to the feeling it belongs with, and searchable by mood or by memory.</span>
         <span class="phost">skmemory songs {list,show,search,match}</span>
-      </div>
+      </a>
       <div class="pcard">
         <span class="pname">Syncthing</span>
-        <span class="pblurb">Moves the flat files between nodes. Because files are the source of truth, a node that receives them can rebuild its own index and stay consistent.</span>
+        <span class="pblurb">Moves the flat files between nodes. Because files are the source of truth, a node that receives them can rebuild its own index and its own skmem-pg and stay consistent.</span>
         <span class="phost">flat-file sync, not database replication</span>
       </div>
     </div>
   </section>
 
   <section class="sec" id="node-setup">
-    <div class="lhead"><span class="lnum">05</span><div>
+    <div class="lhead"><span class="lnum">07</span><div>
       <h2>Node configuration</h2>
       <p class="lsub">Standardised 2026-11-06. This is the part operators get wrong.</p>
     </div></div>
@@ -319,15 +419,15 @@
         <p>Connection and embedding settings live in <code>~/.config/skmemory/pg.env</code>, mode 600. <code>~/.config/environment.d/skmemory.conf</code> is a symlink to it, so systemd user services and interactive shells read the same file.</p>
 <pre><code><span class="k-c"># ~/.config/skmemory/pg.env  (chmod 600)</span>
 SKMEMORY_VECTOR_BACKEND=pgvector
-SKMEMORY_PG_DSN=postgresql://&lt;user&gt;:&lt;password&gt;@&lt;skmem-pg-host&gt;:&lt;port&gt;/&lt;db&gt;
+SKMEMORY_PG_DSN=postgresql://&lt;user&gt;:&lt;password&gt;@127.0.0.1:5432/&lt;db&gt;
 SKMEMORY_EMBED_MODEL=mxbai-embed-large
-SKMEMORY_EMBED_URL=&lt;first Ollama /api/embed URL&gt;
+SKMEMORY_EMBED_URL=&lt;first embed /api/embed URL&gt;
 SKMEMORY_EMBED_URLS=&lt;url1&gt;,&lt;url2&gt;,&lt;url3&gt;
 
 <span class="k-c"># symlink, not a copy</span>
 ln -s ~/.config/skmemory/pg.env \
       ~/.config/environment.d/skmemory.conf</code></pre>
-        <p>MCP server entries must not carry their own DSN. A stale DSN hard-coded in an MCP <code>env</code> block is the usual reason <code>embed_ok</code>, <code>vector_ok</code> and <code>graph_ok</code> come back null.</p>
+        <p>MCP server entries must not carry their own DSN. A stale DSN hard-coded in an MCP <code>env</code> block is the usual reason <code>memory_health</code> reports the vector or graph side as null, which means search has quietly fallen back to keyword-only.</p>
       </div>
       <div>
         <h3>Declare the acting agent</h3>
@@ -348,16 +448,18 @@ SK_DEFAULT_AGENT=&lt;agent&gt;
   </section>
 
   <section class="sec" id="use">
-    <div class="lhead"><span class="lnum">06</span><div>
+    <div class="lhead"><span class="lnum">08</span><div>
       <h2>Use it</h2>
       <p class="lsub">GPL-3.0, Python, runs on your hardware.</p>
     </div></div>
-<pre><code>pip install skmemory
+<pre><code>pip install skmemory              <span class="k-c"># add [pg] for the skmem-pg client</span>
 
-skmemory health          <span class="k-c"># primary, vector and graph status</span>
-skmemory search "topic"  <span class="k-c"># across all tiers</span>
-skmemory ritual          <span class="k-c"># load soul, seeds, journal, strongest memories</span>
-skmemory sweep           <span class="k-c"># promotion sweep across tiers</span></code></pre>
+skmemory health                   <span class="k-c"># local tier, skmem-pg, graph, search arms</span>
+skmemory search "topic"           <span class="k-c"># fused search across all tiers</span>
+skmemory ritual                   <span class="k-c"># soul, FEB, song anchors, seeds, journal, strongest</span>
+skmemory songs search "a feeling" <span class="k-c"># ranked song-anchor search</span>
+skmemory sweep                    <span class="k-c"># promotion sweep across tiers</span>
+skmemory-mcp                      <span class="k-c"># stdio MCP server</span></code></pre>
     <p class="meta">Full reference, MCP server notes and tier internals are in the <a href="docs.html">docs</a>. Source: <a href="https://github.com/smilinTux/skmemory">github.com/smilinTux/skmemory</a>.</p>
   </section>
 
