@@ -5195,7 +5195,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <div class="pulse-dot"></div>
         <h1>SKMemory Component Map</h1>
       </div>
-      <p class="subtitle">A three-tier memory store with pluggable storage backends, reached through a CLI, an MCP server, and a Python API</p>
+      <p class="subtitle">A per-agent memory store with flat JSON files as the source of truth and two storage tiers, reached through a CLI, an MCP server, and a Python API</p>
     </div>
 
 
@@ -5205,7 +5205,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
          data-preset-badge-editorial-plate="ARCHIFY / PLATE 04">
       <svg viewBox="0 0 960 832" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="classic" data-quality-profile="showcase" data-node-ui="" data-reader-fit="intrinsic-height" data-reader-min-text="7.5" data-reader-primary-text="14">
         <title id="archify-diagram-title">SKMemory Component Map</title>
-        <desc id="archify-diagram-description">A three-tier memory store with pluggable storage backends, reached through a CLI, an MCP server, and a Python API</desc>
+        <desc id="archify-diagram-description">A per-agent memory store with flat JSON files as the source of truth and two storage tiers, reached through a CLI, an MCP server, and a Python API</desc>
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -5254,8 +5254,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
         <!-- Connection paths (before components for correct z-order) -->
         <g data-graph-role="automatic-crossover" style="--step:0">
-          <path data-graph-role="automatic-crossover-underlay" d="M 130 104 L 130 188 Q 130 196 138 196 L 431 196 Q 439 196 439 204 L 439 220" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="cli" data-edge-to="store" data-edge-label="CLI calls" data-edge-key="0" data-edge-id="cli-to-store" data-composition-points="130,104;130,196;439,196;439,220" data-composition-crossover="halo" data-composition-independent="true" d="M 130 104 L 130 188 Q 130 196 138 196 L 431 196 Q 439 196 439 204 L 439 220" class="a-default" data-animate="edge" style="--step:0" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 214 104 L 214 228 Q 214 236 222 236 L 350 236" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="cli" data-edge-to="store" data-edge-label="CLI calls" data-edge-key="0" data-edge-id="cli-to-store" data-composition-points="214,104;214,236;350,236" data-composition-crossover="halo" data-composition-independent="true" d="M 214 104 L 214 228 Q 214 236 222 236 L 350 236" class="a-default" data-animate="edge" style="--step:0" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:1">
           <path data-graph-role="automatic-crossover-underlay" d="M 360 104 L 360 154 Q 360 162 368 162 L 445 162 Q 453 162 453 170 L 453 220" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
@@ -5270,24 +5270,28 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <path data-edge-from="importers" data-edge-to="store" data-edge-label="ingest" data-edge-key="3" data-edge-id="importers-to-store" data-composition-points="716,104;716,236;570,236" data-composition-crossover="halo" data-composition-independent="true" d="M 716 104 L 716 228 Q 716 236 708 236 L 570 236" class="a-dashed" data-animate="edge" style="--step:3" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:4">
-          <path data-graph-role="automatic-crossover-underlay" d="M 350 252 L 168 252 Q 160 252 160 260 L 160 400" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="store" data-edge-to="storage" data-edge-label="read/write" data-edge-key="4" data-edge-id="store-to-storage" data-composition-points="350,252;160,252;160,400" data-composition-crossover="halo" data-composition-independent="true" d="M 350 252 L 168 252 Q 160 252 160 260 L 160 400" class="a-default" data-animate="edge" style="--step:4" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 350 268 L 282 268 Q 274 268 274 276 L 274 400" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="store" data-edge-to="local" data-edge-label="read/write" data-edge-key="4" data-edge-id="store-to-local" data-composition-points="350,268;274,268;274,400" data-composition-crossover="halo" data-composition-independent="true" d="M 350 268 L 282 268 Q 274 268 274 276 L 274 400" class="a-default" data-animate="edge" style="--step:4" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:5">
-          <path data-graph-role="automatic-crossover-underlay" d="M 467 284 L 467 400" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="store" data-edge-to="services" data-edge-label="seal, identity, rehydrate, route" data-edge-key="5" data-edge-id="store-to-services" data-composition-points="467,284;467,400" data-composition-crossover="halo" data-composition-independent="true" d="M 467 284 L 467 400" class="a-default" data-animate="edge" style="--step:5" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 160 464 L 160 540" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="local" data-edge-to="shared" data-edge-label="sync --vector --graph" data-edge-key="5" data-edge-id="local-to-shared" data-composition-points="160,464;160,540" data-composition-crossover="halo" data-composition-independent="true" d="M 160 464 L 160 540" class="a-dashed" data-animate="edge" style="--step:5" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:6">
-          <path data-graph-role="automatic-crossover-underlay" d="M 570 268 L 698 268 Q 706 268 706 276 L 706 400" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="store" data-edge-to="short" data-edge-label="write" data-edge-key="6" data-edge-id="store-to-short" data-composition-points="570,268;706,268;706,400" data-composition-crossover="halo" data-composition-independent="true" d="M 570 268 L 698 268 Q 706 268 706 276 L 706 400" class="a-default" data-animate="edge" style="--step:6" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 460 284 L 460 400" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="store" data-edge-to="services" data-edge-label="seal, ritual, route, gate" data-edge-key="6" data-edge-id="store-to-services" data-composition-points="460,284;460,400" data-composition-crossover="halo" data-composition-independent="true" d="M 460 284 L 460 400" class="a-default" data-animate="edge" style="--step:6" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:7">
-          <path data-graph-role="automatic-crossover-underlay" d="M 785 464 L 785 540" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="short" data-edge-to="mid" data-edge-label="promote" data-edge-key="7" data-edge-id="short-to-mid" data-composition-points="785,464;785,540" data-composition-crossover="halo" data-composition-independent="true" d="M 785 464 L 785 540" class="a-emphasis" data-animate="edge" style="--step:7" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+          <path data-graph-role="automatic-crossover-underlay" d="M 570 268 L 698 268 Q 706 268 706 276 L 706 400" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="store" data-edge-to="short" data-edge-label="write" data-edge-key="7" data-edge-id="store-to-short" data-composition-points="570,268;706,268;706,400" data-composition-crossover="halo" data-composition-independent="true" d="M 570 268 L 698 268 Q 706 268 706 276 L 706 400" class="a-default" data-animate="edge" style="--step:7" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         </g>
         <g data-graph-role="automatic-crossover" style="--step:8">
+          <path data-graph-role="automatic-crossover-underlay" d="M 785 464 L 785 540" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="short" data-edge-to="mid" data-edge-label="promote" data-edge-key="8" data-edge-id="short-to-mid" data-composition-points="785,464;785,540" data-composition-crossover="halo" data-composition-independent="true" d="M 785 464 L 785 540" class="a-emphasis" data-animate="edge" style="--step:8" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:9">
           <path data-graph-role="automatic-crossover-underlay" d="M 790 604 L 790 680" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-          <path data-edge-from="mid" data-edge-to="long" data-edge-label="promote" data-edge-key="8" data-edge-id="mid-to-long" data-composition-points="790,604;790,680" data-composition-crossover="halo" data-composition-independent="true" d="M 790 604 L 790 680" class="a-emphasis" data-animate="edge" style="--step:8" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+          <path data-edge-from="mid" data-edge-to="long" data-edge-label="promote" data-edge-key="9" data-edge-id="mid-to-long" data-composition-points="790,604;790,680" data-composition-crossover="halo" data-composition-independent="true" d="M 790 604 L 790 680" class="a-emphasis" data-animate="edge" style="--step:9" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         </g>
 
         <!-- Components -->
@@ -5333,8 +5337,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <text data-detail="context" x="590" y="86" class="t-muted" font-size="9" text-anchor="middle">MemoryStore class</text>
         </g>
 
-        <g id="node-importers" data-node-id="importers" data-node-label="Importers" tabindex="0" role="button" aria-label="Focus Importers, Telegram API, Cloud 9 seeds, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="Telegram API, Cloud 9 seeds" data-node-context="Architecture component">
-          <title>Importers · Telegram API, Cloud 9 seeds · Architecture component</title>
+        <g id="node-importers" data-node-id="importers" data-node-label="Importers" tabindex="0" role="button" aria-label="Focus Importers, Telegram, Cloud 9 seeds, documents, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="Telegram, Cloud 9 seeds, documents" data-node-context="Architecture component">
+          <title>Importers · Telegram, Cloud 9 seeds, documents · Architecture component</title>
           <rect x="700" y="40" width="210" height="64" rx="8" class="c-mask"/>
           <rect x="700" y="40" width="210" height="64" rx="8" class="c-external" data-animate="node" style="--step:3" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(706 46) scale(0.6875)">
@@ -5342,7 +5346,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="805" y="70" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Importers</text>
-        <text data-detail="context" x="805" y="86" class="t-muted" font-size="9" text-anchor="middle">Telegram API, Cloud 9 seeds</text>
+        <text data-detail="context" x="805" y="86" class="t-muted" font-size="9" text-anchor="middle">Telegram, Cloud 9 seeds, documents</text>
         </g>
 
         <g id="node-store" data-node-id="store" data-node-label="MemoryStore" tabindex="0" role="button" aria-label="Focus MemoryStore, core orchestrator, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="core orchestrator" data-node-context="Architecture component">
@@ -5356,34 +5360,47 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <text data-detail="context" x="460" y="266" class="t-muted" font-size="9" text-anchor="middle">core orchestrator</text>
         </g>
 
-        <g id="node-storage" data-node-id="storage" data-node-label="Storage Backends" tabindex="0" role="button" aria-label="Focus Storage Backends, SQLite/JSON primary, Chroma/Qdrant vector, FalkorDB graph, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="SQLite/JSON primary, Chroma/Qdrant vector, FalkorDB graph" data-node-tag="pluggable" data-node-context="Architecture component">
-          <title>Storage Backends · SQLite/JSON primary, Chroma/Qdrant vector, FalkorDB graph · Architecture component · pluggable</title>
-          <rect x="30" y="400" width="260" height="80" rx="8" class="c-mask"/>
-          <rect x="30" y="400" width="260" height="80" rx="8" class="c-database" data-animate="node" style="--step:5" stroke-width="1.5"/>
+        <g id="node-local" data-node-id="local" data-node-label="Local tier" tabindex="0" role="button" aria-label="Focus Local tier, flat JSON truth + SQLite index.db, FTS5, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="flat JSON truth + SQLite index.db, FTS5" data-node-tag="always on" data-node-context="Architecture component">
+          <title>Local tier · flat JSON truth + SQLite index.db, FTS5 · Architecture component · always on</title>
+          <rect x="30" y="400" width="260" height="64" rx="8" class="c-mask"/>
+          <rect x="30" y="400" width="260" height="64" rx="8" class="c-database" data-animate="node" style="--step:5" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(36 406) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="160" y="438" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Storage Backends</text>
-        <text data-detail="context" x="160" y="454" class="t-muted" font-size="7.3" text-anchor="middle">SQLite/JSON primary, Chroma/Qdrant vector, FalkorDB graph</text>
-        <text data-detail="fine" x="160" y="472" class="t-database" font-size="7" text-anchor="middle">pluggable</text>
+          <text data-node-label="" data-detail-anchor="" x="160" y="430" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Local tier</text>
+        <text data-detail="context" x="160" y="446" class="t-muted" font-size="9" text-anchor="middle">flat JSON truth + SQLite index.db, FTS5</text>
+        <text data-detail="fine" x="160" y="456" class="t-database" font-size="7" text-anchor="middle">always on</text>
         </g>
 
-        <g id="node-services" data-node-id="services" data-node-label="Store Services" tabindex="0" role="button" aria-label="Focus Store Services, integrity seal, identity, rehydration, routing, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="integrity seal, identity, rehydration, routing" data-node-context="Architecture component">
-          <title>Store Services · integrity seal, identity, rehydration, routing · Architecture component</title>
-          <rect x="340" y="400" width="290" height="80" rx="8" class="c-mask"/>
-          <rect x="340" y="400" width="290" height="80" rx="8" class="c-backend" data-animate="node" style="--step:6" stroke-width="1.5"/>
+        <g id="node-shared" data-node-id="shared" data-node-label="Shared tier: skmem-pg" tabindex="0" role="button" aria-label="Focus Shared tier: skmem-pg, pgvector, pg_search BM25, Apache AGE, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="pgvector, pg_search BM25, Apache AGE" data-node-tag="per node" data-node-context="Architecture component">
+          <title>Shared tier: skmem-pg · pgvector, pg_search BM25, Apache AGE · Architecture component · per node</title>
+          <rect x="30" y="540" width="260" height="64" rx="8" class="c-mask"/>
+          <rect x="30" y="540" width="260" height="64" rx="8" class="c-database" data-animate="node" style="--step:6" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(36 546) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="160" y="570" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Shared tier: skmem-pg</text>
+        <text data-detail="context" x="160" y="586" class="t-muted" font-size="9" text-anchor="middle">pgvector, pg_search BM25, Apache AGE</text>
+        <text data-detail="fine" x="160" y="596" class="t-database" font-size="7" text-anchor="middle">per node</text>
+        </g>
+
+        <g id="node-services" data-node-id="services" data-node-label="Store Services" tabindex="0" role="button" aria-label="Focus Store Services, integrity seal, soul, ritual (FEB, songs), quadrants, audience gate, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="integrity seal, soul, ritual (FEB, songs), quadrants, audience gate" data-node-context="Architecture component">
+          <title>Store Services · integrity seal, soul, ritual (FEB, songs), quadrants, audience gate · Architecture component</title>
+          <rect x="340" y="400" width="300" height="80" rx="8" class="c-mask"/>
+          <rect x="340" y="400" width="300" height="80" rx="8" class="c-backend" data-animate="node" style="--step:7" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(346 406) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="485" y="438" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Store Services</text>
-        <text data-detail="context" x="485" y="454" class="t-muted" font-size="9" text-anchor="middle">integrity seal, identity, rehydration, routing</text>
+          <text data-node-label="" data-detail-anchor="" x="490" y="438" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Store Services</text>
+        <text data-detail="context" x="490" y="454" class="t-muted" font-size="7.2" text-anchor="middle">integrity seal, soul, ritual (FEB, songs), quadrants, audience gate</text>
         </g>
 
         <g id="node-short" data-node-id="short" data-node-label="Short-term" tabindex="0" role="button" aria-label="Focus Short-term, session tier, high volume, Memory tiers (promotion chain)" aria-pressed="false" data-node-kind="database" data-node-sublabel="session tier, high volume" data-node-context="Memory tiers (promotion chain)">
           <title>Short-term · session tier, high volume · Memory tiers (promotion chain)</title>
           <rect x="690" y="400" width="190" height="64" rx="8" class="c-mask"/>
-          <rect x="690" y="400" width="190" height="64" rx="8" class="c-database" data-animate="node" style="--step:7" stroke-width="1.5"/>
+          <rect x="690" y="400" width="190" height="64" rx="8" class="c-database" data-animate="node" style="--step:8" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(696 406) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
@@ -5395,7 +5412,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <g id="node-mid" data-node-id="mid" data-node-label="Mid-term" tabindex="0" role="button" aria-label="Focus Mid-term, project tier, proven relevance, Memory tiers (promotion chain)" aria-pressed="false" data-node-kind="database" data-node-sublabel="project tier, proven relevance" data-node-context="Memory tiers (promotion chain)">
           <title>Mid-term · project tier, proven relevance · Memory tiers (promotion chain)</title>
           <rect x="690" y="540" width="200" height="64" rx="8" class="c-mask"/>
-          <rect x="690" y="540" width="200" height="64" rx="8" class="c-database" data-animate="node" style="--step:8" stroke-width="1.5"/>
+          <rect x="690" y="540" width="200" height="64" rx="8" class="c-database" data-animate="node" style="--step:9" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(696 546) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
@@ -5407,7 +5424,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <g id="node-long" data-node-id="long" data-node-label="Long-term" tabindex="0" role="button" aria-label="Focus Long-term, identity tier, permanent, Memory tiers (promotion chain)" aria-pressed="false" data-node-kind="database" data-node-sublabel="identity tier, permanent" data-node-context="Memory tiers (promotion chain)">
           <title>Long-term · identity tier, permanent · Memory tiers (promotion chain)</title>
           <rect x="690" y="680" width="200" height="64" rx="8" class="c-mask"/>
-          <rect x="690" y="680" width="200" height="64" rx="8" class="c-database" data-animate="node" style="--step:9" stroke-width="1.5"/>
+          <rect x="690" y="680" width="200" height="64" rx="8" class="c-database" data-animate="node" style="--step:10" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(696 686) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
@@ -5418,8 +5435,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
         <!-- Connection labels -->
         <g data-detail="context" data-edge-from="cli" data-edge-to="store" data-edge-label="CLI calls" data-edge-key="0" data-edge-id="cli-to-store">
-          <rect x="257.9" y="176" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
-          <text x="284.5" y="186" class="t-edge-default" font-size="8" text-anchor="middle">CLI calls</text>
+          <rect x="255.4" y="216" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
+          <text x="282" y="226" class="t-edge-default" font-size="8" text-anchor="middle">CLI calls</text>
         </g>
         <g data-detail="context" data-edge-from="mcp" data-edge-to="store" data-edge-label="MCP tool calls" data-edge-key="1" data-edge-id="mcp-to-store">
           <rect x="276.79999999999995" y="126" width="77.2" height="14" rx="3" class="c-mask"/>
@@ -5433,23 +5450,27 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <rect x="623.6" y="216" width="38.8" height="14" rx="3" class="c-mask"/>
           <text x="643" y="226" class="t-edge-dashed" font-size="8" text-anchor="middle">ingest</text>
         </g>
-        <g data-detail="context" data-edge-from="store" data-edge-to="storage" data-edge-label="read/write" data-edge-key="4" data-edge-id="store-to-storage">
-          <rect x="131" y="306" width="58" height="14" rx="3" class="c-mask"/>
-          <text x="160" y="316" class="t-edge-default" font-size="8" text-anchor="middle">read/write</text>
+        <g data-detail="context" data-edge-from="store" data-edge-to="local" data-edge-label="read/write" data-edge-key="4" data-edge-id="store-to-local">
+          <rect x="245" y="314" width="58" height="14" rx="3" class="c-mask"/>
+          <text x="274" y="324" class="t-edge-default" font-size="8" text-anchor="middle">read/write</text>
         </g>
-        <g data-detail="context" data-edge-from="store" data-edge-to="services" data-edge-label="seal, identity, rehydrate, route" data-edge-key="5" data-edge-id="store-to-services">
-          <rect x="297.4" y="335" width="163.6" height="14" rx="3" class="c-mask"/>
-          <text x="379.2" y="345" class="t-edge-default" font-size="8" text-anchor="middle">seal, identity, rehydrate, route</text>
+        <g data-detail="context" data-edge-from="local" data-edge-to="shared" data-edge-label="sync --vector --graph" data-edge-key="5" data-edge-id="local-to-shared">
+          <rect x="43.199999999999996" y="495" width="110.8" height="14" rx="3" class="c-mask"/>
+          <text x="98.6" y="505" class="t-edge-dashed" font-size="8" text-anchor="middle">sync --vector --graph</text>
         </g>
-        <g data-detail="context" data-edge-from="store" data-edge-to="short" data-edge-label="write" data-edge-key="6" data-edge-id="store-to-short">
+        <g data-detail="context" data-edge-from="store" data-edge-to="services" data-edge-label="seal, ritual, route, gate" data-edge-key="6" data-edge-id="store-to-services">
+          <rect x="324" y="335" width="130" height="14" rx="3" class="c-mask"/>
+          <text x="389" y="345" class="t-edge-default" font-size="8" text-anchor="middle">seal, ritual, route, gate</text>
+        </g>
+        <g data-detail="context" data-edge-from="store" data-edge-to="short" data-edge-label="write" data-edge-key="7" data-edge-id="store-to-short">
           <rect x="689" y="314" width="34" height="14" rx="3" class="c-mask"/>
           <text x="706" y="324" class="t-edge-default" font-size="8" text-anchor="middle">write</text>
         </g>
-        <g data-detail="context" data-edge-from="short" data-edge-to="mid" data-edge-label="promote" data-edge-key="7" data-edge-id="short-to-mid">
+        <g data-detail="context" data-edge-from="short" data-edge-to="mid" data-edge-label="promote" data-edge-key="8" data-edge-id="short-to-mid">
           <rect x="735.4000000000001" y="495" width="43.6" height="14" rx="3" class="c-mask"/>
           <text x="757.2" y="505" class="t-edge-emphasis" font-size="8" text-anchor="middle">promote</text>
         </g>
-        <g data-detail="context" data-edge-from="mid" data-edge-to="long" data-edge-label="promote" data-edge-key="8" data-edge-id="mid-to-long">
+        <g data-detail="context" data-edge-from="mid" data-edge-to="long" data-edge-label="promote" data-edge-key="9" data-edge-id="mid-to-long">
           <rect x="740.4000000000001" y="635" width="43.6" height="14" rx="3" class="c-mask"/>
           <text x="762.2" y="645" class="t-edge-emphasis" font-size="8" text-anchor="middle">promote</text>
         </g>
@@ -5663,30 +5684,30 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <h3>Sovereign by default</h3>
         </div>
         <ul>
-          <li>Flat JSON files are the source of truth, SQLite is a derived local index</li>
-          <li>No cloud dependency and no vendor lock-in required to run the store</li>
+          <li>Flat JSON files are the source of truth; SQLite and skmem-pg are derived and rebuildable</li>
+          <li>The local tier answers offline with no Postgres and no embed endpoint</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot cyan"></div>
-          <h3>Promotion, not curation</h3>
+          <h3>Promotion by feeling and use</h3>
         </div>
         <ul>
-          <li>Memories move short to mid to long automatically by access count and importance score</li>
-          <li>Mid-term at 3+ accesses or importance 0.7+, long-term at 10+ accesses or importance 0.9+</li>
+          <li>Short to mid at emotional intensity 5.0+, or after 24 h with 3+ accesses (defaults)</li>
+          <li>Mid to long at intensity 7.0+, a milestone or breakthrough tag, or a Cloud 9 moment</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot rose"></div>
-          <h3>Tamper-evident</h3>
+          <h3>Tamper-evident and gated</h3>
         </div>
         <ul>
-          <li>FortifiedMemoryStore seals each memory at creation and keeps an audit log</li>
-          <li>A PGP-encrypted vaulted variant of the primary backend adds encryption at rest</li>
+          <li>FortifiedMemoryStore seals each memory and keeps a chain-hashed audit log; a vaulted backend adds AES-256-GCM at rest</li>
+          <li>Every memory has an audience tag, and a declared reader can only narrow what it sees</li>
         </ul>
       </div>
     </div>
