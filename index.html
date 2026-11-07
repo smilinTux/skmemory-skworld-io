@@ -147,7 +147,7 @@
         <path d="M124 216V254" class="d-ln" marker-end="url(#ah)"/>
         <text x="132" y="240" class="d-note">lexical_local</text>
         <path d="M356 216V246" class="d-ln" marker-end="url(#ah)"/>
-        <text x="364" y="236" class="d-note">semantic, lexical, graph</text>
+        <text x="364" y="236" class="d-note">pg arms</text>
 
         <text x="16" y="250" class="d-lbl">LOCAL TIER</text>
         <rect x="16" y="256" width="216" height="58" rx="8" class="d-tea"/>
@@ -170,7 +170,7 @@
 
         <rect x="248" y="248" width="216" height="186" rx="8" class="d-tea"/>
         <text x="260" y="268" class="d-t">skmem-pg</text>
-        <text x="260" y="284" class="d-s">shared tier, one Postgres per node</text>
+        <text x="260" y="284" class="d-s">shared tier, per node</text>
         <rect x="258" y="294" width="196" height="40" rx="6" class="d-box"/>
         <text x="268" y="311" class="d-t">pgvector</text>
         <text x="268" y="326" class="d-s">semantic arm, dim 1024</text>
@@ -185,7 +185,7 @@
         <text x="364" y="458" class="d-note">embed</text>
         <rect x="248" y="474" width="216" height="48" rx="8" class="d-box"/>
         <text x="260" y="494" class="d-t">Embed endpoint</text>
-        <text x="260" y="510" class="d-s">mxbai-embed-large, ordered failover</text>
+        <text x="260" y="510" class="d-s">mxbai-embed-large, failover</text>
       </svg>
       <figcaption>Solid arrows are requests and writes, the dashed arrow is the embedding call. Both tiers are derived from the flat files: <code>skmemory reindex</code> rebuilds SQLite, and <code>skmemory sync --vector --graph</code> rebuilds skmem-pg. Embeddings go straight to the configured endpoint, not through skgateway.</figcaption>
       <ul class="legend">
@@ -327,7 +327,7 @@ skmemory songs ritual-preview</code></pre>
     </ul>
     <div class="twrap">
       <table class="btable">
-        <thead><tr><th>Query class</th><th>Strategy</th><th>Queries</th><th>Recall@3</th><th>MRR</th></tr></thead>
+        <thead><tr><th>Query class</th><th>Strategy</th><th class="n">Queries</th><th class="n">Recall@3</th><th class="n">MRR</th></tr></thead>
         <tbody>
           <tr><td>mood</td><td>substring (old)</td><td class="n">12</td><td class="n">0.000</td><td class="n">0.000</td></tr>
           <tr><td>mood</td><td>ranked</td><td class="n">12</td><td class="n">0.917</td><td class="n">0.819</td></tr>

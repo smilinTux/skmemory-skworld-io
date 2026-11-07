@@ -208,7 +208,7 @@ pre code{font-family:"JetBrains Mono",ui-monospace,monospace;background:none;col
 .btable{border-collapse:collapse;width:100%;font-size:.88rem;min-width:30rem}
 .btable th,.btable td{padding:.55rem .85rem;text-align:left;border-bottom:1px solid var(--line-2)}
 .btable th{font-family:"JetBrains Mono",monospace;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:500}
-.btable td.n{font-family:"JetBrains Mono",monospace;text-align:right}
+.btable th.n,.btable td.n{font-family:"JetBrains Mono",monospace;text-align:right}
 .btable tr:last-child td{border-bottom:none}
 .steps{margin:0 0 1.2rem;padding-left:1.4rem;color:var(--ink-2);font-size:.94rem;max-width:72ch}
 .steps li{margin-bottom:.55rem}
