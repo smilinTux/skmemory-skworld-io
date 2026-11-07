@@ -1,18 +1,33 @@
 # SKMemory
 
-> Per-agent memory for the SK stack. Flat JSON files are the source of truth, with a SQLite index, a pgvector vector backend and an Apache AGE graph backend.
+> Per-agent memory for the SK stack. Flat JSON files are the source of truth, with exactly two storage tiers: a local tier (SQLite index.db with an FTS5 lexical arm, works offline) and a shared tier (skmem-pg, one Postgres per node with pgvector, pg_search BM25 and Apache AGE). Memories carry emotional snapshots, song anchors match feelings, and sacred content sits behind audience barriers.
 
 SKMemory stores memory per agent in short-term, mid-term and long-term directories of JSON files,
-synced between nodes by Syncthing. A local SQLite index is rebuilt from those files. Vectors
-(PGVectorBackend, dimension 1024, mxbai-embed-large via ordered Ollama endpoints) and the graph
-(AGEGraphBackend) live in one Postgres (skmem-pg). A node is healthy only when all three backends
-report ok. Agents use it through an MCP server (memory_store, memory_search, memory_recall,
-memory_list, memory_context, memory_health and more) or the skmemory CLI.
+synced between nodes by Syncthing. Both storage tiers are derived from those files and can be
+rebuilt (skmemory reindex, skmemory sync --vector --graph). ChromaDB, Qdrant and FalkorDB are retired.
+Search fuses semantic (pgvector, mxbai-embed-large, dimension 1024), lexical (BM25), local FTS5,
+temporal and, when enabled, graph arms under one 4 second deadline. Agents use it through a stdio
+MCP server (skmemory-mcp, 26 tools such as memory_store, memory_search, memory_recall, memory_list,
+memory_context, memory_health) or the skmemory CLI.
+
+## Sections
+
+- [Architecture](https://skmemory.skworld.io/#architecture): callers, the store and the two tiers
+- [Two storage tiers](https://skmemory.skworld.io/#tiers): local and shared tiers, how a search runs
+- [Emotional memory](https://skmemory.skworld.io/#emotion): emotional snapshot on every memory (intensity 0-10, valence -1 to +1, labels, resonance note), promotion by intensity, FEB files, OOF score, the rehydration ritual
+- [Song memories](https://skmemory.skworld.io/#songs): song anchors (sonic FEBs) matched to the current FEB, ranked song search and its offline recall benchmark
+- [Sacred memories and their barriers](https://skmemory.skworld.io/#sacred): audience tags, the SKMEMORY_READER ceiling, not-found for hidden ids, owner-only tools, sacred and private tags kept out of injection, fail-closed shared document reads, source-tier provenance cap
+- [Connections](https://skmemory.skworld.io/#connections): SKWhisper, skcapstone, skgateway, Cloud 9, Syncthing
+- [Node configuration](https://skmemory.skworld.io/#node-setup): one env file, a declared agent
 
 ## Links
 
 - [Live site](https://skmemory.skworld.io/)
 - [Docs](https://skmemory.skworld.io/docs.html)
+- [Getting started](https://skmemory.skworld.io/docs/getting-started/)
+- [Memory layers](https://skmemory.skworld.io/docs/memory-layers/)
+- [MCP server](https://skmemory.skworld.io/docs/mcp-server/)
+- [Component map](https://skmemory.skworld.io/diagrams/skmemory.architecture.html)
 - [Source](https://github.com/smilinTux/skmemory)
 
 ## Related

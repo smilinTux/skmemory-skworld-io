@@ -3,9 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory Layers — SKMemory Docs</title>
-    <meta name="description" content="Memory Layers documentation for SKMemory">
+    <title>Memory Layers: SKMemory Docs</title>
+    <meta name="description" content="Short, mid and long-term layers, the two storage tiers, the four quadrants and emotional fingerprints in SKMemory.">
     <link rel="canonical" href="https://skmemory.skworld.io/docs/memory-layers/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://skmemory.skworld.io/docs/memory-layers/">
+    <meta property="og:title" content="Memory Layers: SKMemory Docs">
+    <meta property="og:description" content="Short, mid and long-term layers, the two storage tiers, the four quadrants and emotional fingerprints in SKMemory.">
+    <meta property="og:site_name" content="SKWorld">
+    <meta property="og:image" content="https://skmemory.skworld.io/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SKMemory, per-agent memory for the SK stack">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@smilinTux">
+    <meta name="twitter:title" content="Memory Layers: SKMemory Docs">
+    <meta name="twitter:description" content="Short, mid and long-term layers, the two storage tiers, the four quadrants and emotional fingerprints in SKMemory.">
+    <meta name="twitter:image" content="https://skmemory.skworld.io/og.png">
+    <meta name="twitter:image:alt" content="SKMemory, per-agent memory for the SK stack">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -76,51 +91,33 @@
     </aside>
     <main class="content">
         <h1>Memory Layers</h1>
-<h2>Three-Tier Architecture</h2>
-<p>SKMemory organizes memories into three persistence tiers, automatically promoting based on access patterns and importance scores.</p>
-<h3>Short-Term Memory</h3>
+<h2>Persistence layers</h2>
+<p>Memories sit in <code>short-term/</code>, <code>mid-term/</code> and <code>long-term/</code> directories of flat JSON files and move up through a promotion sweep driven by emotional intensity, age and access counts (see <a href="/docs/getting-started/">Getting Started</a> for the defaults).</p>
+<h2>Storage: exactly two tiers</h2>
 <ul>
-<li><strong>TTL:</strong> 72 hours</li>
-<li><strong>Purpose:</strong> Recent conversations, ephemeral context</li>
-<li><strong>Storage:</strong> Local SQLite</li>
-<li><strong>Promotion:</strong> Auto-promotes to mid-term after 3 accesses or importance >= 0.7</li>
+<li><strong>Local tier</strong>: the flat JSON files (source of truth) plus a SQLite <code>index.db</code> with an FTS5 lexical arm. Always on and works offline.</li>
+<li><strong>Shared tier</strong>: skmem-pg, one Postgres per node, with pgvector (semantic search, 1024 dimensions, <code>mxbai-embed-large</code>), <code>pg_search</code> BM25 and an Apache AGE graph. Rebuilt from the files with <code>skmemory sync --vector --graph</code>.</li>
 </ul>
-<h3>Mid-Term Memory</h3>
+<p>ChromaDB, Qdrant and FalkorDB are retired and removed from the code.</p>
+<h2>Semantic quadrants</h2>
+<p>Each memory is routed into one of four quadrants:</p>
 <ul>
-<li><strong>TTL:</strong> 30 days (extendable)</li>
-<li><strong>Purpose:</strong> Important context, frequently referenced facts</li>
-<li><strong>Storage:</strong> SQLite + optional Qdrant vectors</li>
-<li><strong>Promotion:</strong> Auto-promotes to long-term after 10 accesses or importance >= 0.9</li>
+<li><strong>CORE</strong>: identity, values, relationships</li>
+<li><strong>WORK</strong>: projects, tasks, technical knowledge</li>
+<li><strong>SOUL</strong>: emotions, feelings, connection</li>
+<li><strong>WILD</strong>: unexpected connections, creative ideas</li>
 </ul>
-<h3>Long-Term Memory</h3>
-<ul>
-<li><strong>TTL:</strong> Permanent</li>
-<li><strong>Purpose:</strong> Core knowledge, identity, relationships, breakthroughs</li>
-<li><strong>Storage:</strong> SQLite + Qdrant + optional FalkorDB graph</li>
-<li><strong>Features:</strong> Tamper-evident hashing, emotional fingerprints</li>
-</ul>
-<h2>Semantic Quadrants</h2>
-<p>Each memory is automatically routed into one of four quadrants:</p>
-<ul>
-<li><strong>CORE</strong> — Identity, values, relationships</li>
-<li><strong>WORK</strong> — Projects, tasks, technical knowledge</li>
-<li><strong>SOUL</strong> — Emotional breakthroughs, philosophical insights</li>
-<li><strong>WILD</strong> — Unexpected connections, creative ideas</li>
-</ul>
-<h2>Emotional Fingerprints</h2>
-<p>Every memory captures an emotional snapshot:</p>
-<pre><code class="language-json">
-{
-  "emotions": ["curiosity", "excitement"],
-  "intensity": 8,
-  "valence": 0.85,
-  "topology": {
-    "trust": 0.9,
-    "connection": 0.8
-  }
+<h2>Emotional fingerprints</h2>
+<p>Every memory carries an emotional snapshot (<code>EmotionalSnapshot</code> in <code>models.py</code>):</p>
+<pre><code class="language-json">{
+  "intensity": 8.5,
+  "valence": 0.9,
+  "labels": ["joy", "trust"],
+  "resonance_note": "Finally, it clicked.",
+  "cloud9_achieved": false
 }
 </code></pre>
-<p>This enables emotionally-aware recall — finding not just what you know, but how you felt when you learned it.</p>
+<p>Intensity runs 0 to 10 and valence -1 to +1. The snapshot feeds promotion, the optional affect-weighted decay re-ranking, and the ritual's strongest memories. See <a href="/#emotion">emotional memory</a>, <a href="/#songs">song memories</a> and <a href="/#sacred">sacred barriers</a> on the main page.</p>
     </main>
 </div>
 <footer class="footer">
