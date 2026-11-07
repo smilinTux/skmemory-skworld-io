@@ -2,7 +2,7 @@
   "repo": "smilinTux/skmemory",
   "branch": "main",
   "path": "docs",
-  "generated": "2026-11-06",
+  "generated": "2026-11-07",
   "note": "Committed fallback for the /docs viewer when the GitHub Contents API is unavailable or rate-limited. Regenerate from: python docs-manifest-gen.py smilinTux/skmemory --out docs-manifest.json",
   "docs": [
     {
@@ -36,6 +36,10 @@
     {
       "name": "PROVENANCE_AND_CLOSURE_DESIGN.md",
       "title": "skmemory — Provenance Admission + Arc Closure (design note)"
+    },
+    {
+      "name": "RUNBOOK-restore.md",
+      "title": "Runbook: restore an agent's memory from backup (drilled)"
     },
     {
       "name": "admission_policy.md",
