@@ -3,9 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCP Server — SKMemory Docs</title>
-    <meta name="description" content="MCP Server documentation for SKMemory">
+    <title>MCP Server: SKMemory Docs</title>
+    <meta name="description" content="Run skmemory-mcp, the stdio MCP server with 26 tools, and how readers and owner-only tools keep private memories gated.">
     <link rel="canonical" href="https://skmemory.skworld.io/docs/mcp-server/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://skmemory.skworld.io/docs/mcp-server/">
+    <meta property="og:title" content="MCP Server: SKMemory Docs">
+    <meta property="og:description" content="Run skmemory-mcp, the stdio MCP server with 26 tools, and how readers and owner-only tools keep private memories gated.">
+    <meta property="og:site_name" content="SKWorld">
+    <meta property="og:image" content="https://skmemory.skworld.io/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SKMemory, per-agent memory for the SK stack">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@smilinTux">
+    <meta name="twitter:title" content="MCP Server: SKMemory Docs">
+    <meta name="twitter:description" content="Run skmemory-mcp, the stdio MCP server with 26 tools, and how readers and owner-only tools keep private memories gated.">
+    <meta name="twitter:image" content="https://skmemory.skworld.io/og.png">
+    <meta name="twitter:image:alt" content="SKMemory, per-agent memory for the SK stack">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -77,60 +92,30 @@
     <main class="content">
         <h1>MCP Server</h1>
 <h2>Overview</h2>
-<p>SKMemory exposes its full API through an MCP (Model Context Protocol) server, allowing any MCP-compatible AI agent to store and retrieve memories.</p>
-<h2>Starting the Server</h2>
-<pre><code class="language-bash">
-# stdio transport (for local agents)
-skmemory serve --transport stdio
-
-# SSE transport (for network agents)
-skmemory serve --transport sse --port 8765
+<p>SKMemory exposes its store through a stdio MCP (Model Context Protocol) server, <code>skmemory-mcp</code>, with 26 tools.</p>
+<h2>Starting the server</h2>
+<pre><code class="language-bash">skmemory-mcp
 </code></pre>
-<h2>Available Tools</h2>
-<h3>skmemory_snapshot</h3>
-<p>Store a new memory.</p>
-<pre><code class="language-json">
-{
-  "title": "Meeting notes",
-  "content": "Discussed the new architecture...",
-  "tags": "meeting,architecture",
-  "emotions": "focused,excited",
-  "intensity": 7
-}
-</code></pre>
-<h3>skmemory_search</h3>
-<p>Search memories by keyword.</p>
-<pre><code class="language-json">
-{
-  "query": "architecture meeting",
-  "limit": 10
-}
-</code></pre>
-<h3>skmemory_ritual</h3>
-<p>Run the rehydration ritual — restore identity, soul, and strongest memories on session start.</p>
-<h3>skmemory_context</h3>
-<p>Load a token-efficient memory context for prompt injection. Respects token budgets.</p>
-<h3>skmemory_recall</h3>
-<p>Retrieve full content of a specific memory by ID.</p>
-<h2>Integration Examples</h2>
-<h3>OpenClaw</h3>
-<pre><code class="language-yaml">
-mcpServers:
-  skmemory:
-    command: skmemory
-    args: [serve, --transport, stdio]
-</code></pre>
-<h3>Claude Desktop</h3>
-<pre><code class="language-json">
-{
+<pre><code class="language-json">{
   "mcpServers": {
-    "skmemory": {
-      "command": "skmemory",
-      "args": ["serve", "--transport", "stdio"]
-    }
+    "skmemory": { "command": "skmemory-mcp" }
   }
 }
 </code></pre>
+<p>Do not put <code>SKMEMORY_PG_DSN</code> in the MCP entry's <code>env</code> block; let the server inherit it from the node's environment so it cannot go stale.</p>
+<h2>Main tools</h2>
+<h3>memory_store</h3>
+<p>Store a new memory (polaroid snapshot) with title, content, layer, tags and source.</p>
+<h3>memory_search</h3>
+<p>Fused search with <code>tags</code>, <code>layer</code>, <code>source</code>, <code>as_of</code> and <code>reader</code> filters.</p>
+<h3>memory_recall</h3>
+<p>Recall one memory by id, with integrity verification.</p>
+<h3>memory_context</h3>
+<p>Token-efficient memory context for system-prompt injection.</p>
+<h3>memory_health</h3>
+<p>Health across the local tier, skmem-pg, the graph, the search arms and the WAL.</p>
+<h2>Readers and owner-only tools</h2>
+<p>Every read tool accepts <code>reader</code> (for example <code>@public</code> or <code>channel:&lt;id&gt;</code>) and honours a process-wide <code>SKMEMORY_READER</code>, which a per-call reader can only narrow. A hidden memory reads as not found. Export, import, consolidate, verify, audit, synthesis and the intention tools are owner only. See <a href="/#sacred">sacred memories and their barriers</a>.</p>
     </main>
 </div>
 <footer class="footer">

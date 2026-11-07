@@ -3,9 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Getting Started — SKMemory Docs</title>
-    <meta name="description" content="Getting Started documentation for SKMemory">
+    <title>Getting Started: SKMemory Docs</title>
+    <meta name="description" content="Install SKMemory, store a memory with an emotional snapshot, search it, and connect the skmemory-mcp server.">
     <link rel="canonical" href="https://skmemory.skworld.io/docs/getting-started/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://skmemory.skworld.io/docs/getting-started/">
+    <meta property="og:title" content="Getting Started: SKMemory Docs">
+    <meta property="og:description" content="Install SKMemory, store a memory with an emotional snapshot, search it, and connect the skmemory-mcp server.">
+    <meta property="og:site_name" content="SKWorld">
+    <meta property="og:image" content="https://skmemory.skworld.io/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SKMemory, per-agent memory for the SK stack">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@smilinTux">
+    <meta name="twitter:title" content="Getting Started: SKMemory Docs">
+    <meta name="twitter:description" content="Install SKMemory, store a memory with an emotional snapshot, search it, and connect the skmemory-mcp server.">
+    <meta name="twitter:image" content="https://skmemory.skworld.io/og.png">
+    <meta name="twitter:image:alt" content="SKMemory, per-agent memory for the SK stack">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -77,73 +92,60 @@
     <main class="content">
         <h1>Getting Started with SKMemory</h1>
 <h2>Installation</h2>
-<h3>Python (CLI + MCP server)</h3>
-<pre><code class="language-bash">
-pip install skmemory
-</code></pre>
-<p>With optional backends:</p>
-<pre><code class="language-bash">
-# Qdrant vector search
-pip install "skmemory[skvector]"
+<pre><code class="language-bash">pip install skmemory
 
-# FalkorDB graph backend  
-pip install "skmemory[skgraph]"
+# skmem-pg client (pgvector + Apache AGE)
+pip install "skmemory[pg]"
 
-# All backends
+# Everything
 pip install "skmemory[all]"
 </code></pre>
-<h3>Node.js / TypeScript</h3>
-<pre><code class="language-bash">
-npm install @smilintux/skmemory
-</code></pre>
-<h2>Quick Start</h2>
-<h3>Store a Memory</h3>
-<pre><code class="language-python">
-from skmemory import snapshot
+<p>There is also a Node wrapper: <code>npm install @smilintux/skmemory</code>.</p>
+<h2>Store a memory (Python)</h2>
+<pre><code class="language-python">from skmemory import MemoryStore, MemoryLayer, EmotionalSnapshot
 
-snapshot(
-    title="First meeting with the team",
-    content="Discussed architecture for the new sovereign stack...",
-    tags="meeting,architecture,sovereign",
-    emotions="excited,focused",
-    intensity=7
+store = MemoryStore()
+memory = store.snapshot(
+    title="Breakthrough on routing bug",
+    content="The issue was in the failover selector logic.",
+    layer=MemoryLayer.SHORT,
+    tags=["work", "debug"],
+    emotional=EmotionalSnapshot(
+        intensity=8.5,
+        valence=0.9,
+        labels=["joy", "curiosity"],
+        resonance_note="Finally, it clicked.",
+    ),
+    source="session",
 )
+results = store.search("routing bug", limit=10)
 </code></pre>
-<h3>Search Memories</h3>
-<pre><code class="language-python">
-from skmemory import search
-
-results = search("architecture meeting")
-for mem in results:
-    print(f"{mem.title} — {mem.created_at}")
+<h2>From the command line</h2>
+<pre><code class="language-bash">skmemory snapshot "Title" "What happened" --intensity 7 --emotions joy,trust
+skmemory search "topic"      # fused search across all tiers
+skmemory ritual              # rehydration ritual for a new session
+skmemory sweep               # run the promotion engine
+skmemory health              # local tier, skmem-pg, graph, search arms
 </code></pre>
-<h3>MCP Server (for AI agents)</h3>
-<pre><code class="language-bash">
-skmemory serve --transport stdio
-</code></pre>
-<p>Add to your AI agent's MCP config:</p>
-<pre><code class="language-json">
-{
+<h2>MCP server</h2>
+<pre><code class="language-json">{
   "mcpServers": {
-    "skmemory": {
-      "command": "skmemory",
-      "args": ["serve", "--transport", "stdio"]
-    }
+    "skmemory": { "command": "skmemory-mcp" }
   }
 }
 </code></pre>
-<h2>Memory Tiers</h2>
-<p>SKMemory automatically promotes memories based on access frequency and importance:</p>
+<h2>Memory tiers</h2>
+<p>Every memory lives in one of three persistence layers and moves up through a promotion sweep. Defaults from <code>promotion.py</code>, all configurable:</p>
 <ul>
-<li><strong>Short-term</strong> (72h TTL) — Recent, ephemeral</li>
-<li><strong>Mid-term</strong> (accessed 3+ times) — Important, frequently referenced</li>
-<li><strong>Long-term</strong> (accessed 10+ times) — Permanent, core knowledge</li>
+<li><strong>Short-term</strong>: where everything starts.</li>
+<li><strong>Mid-term</strong>: emotional intensity 5.0 or more, or at least 24 hours old with 3 or more accesses.</li>
+<li><strong>Long-term</strong>: intensity 7.0 or more, a <code>milestone</code> or <code>breakthrough</code> tag, or a Cloud 9 moment.</li>
 </ul>
-<h2>Next Steps</h2>
+<h2>Next steps</h2>
 <ul>
-<li>Explore <strong>Memory Layers</strong> for deep architecture details</li>
-<li>Set up the <strong>MCP Server</strong> for agent integration</li>
-<li>Check the <a href="https://github.com/smilinTux/skmemory">GitHub repo</a> for the latest updates</li>
+<li>Read <a href="/docs/memory-layers/">Memory Layers</a> for storage, quadrants and emotional fingerprints</li>
+<li>Set up the <a href="/docs/mcp-server/">MCP Server</a> for agent integration</li>
+<li>Check the <a href="https://github.com/smilinTux/skmemory">GitHub repo</a> for the full README</li>
 </ul>
     </main>
 </div>

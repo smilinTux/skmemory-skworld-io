@@ -3,7 +3,7 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "SKMemory Component Map",
-    "subtitle": "A three-tier memory store with pluggable storage backends, reached through a CLI, an MCP server, and a Python API",
+    "subtitle": "A per-agent memory store with flat JSON files as the source of truth and two storage tiers, reached through a CLI, an MCP server, and a Python API",
     "output": "skmemory.architecture.html",
     "quality_profile": "showcase"
   },
@@ -54,7 +54,7 @@
       "id": "importers",
       "type": "external",
       "label": "Importers",
-      "sublabel": "Telegram API, Cloud 9 seeds",
+      "sublabel": "Telegram, Cloud 9 seeds, documents",
       "pos": [
         700,
         40
@@ -79,31 +79,46 @@
       ]
     },
     {
-      "id": "storage",
+      "id": "local",
       "type": "database",
-      "label": "Storage Backends",
-      "sublabel": "SQLite/JSON primary, Chroma/Qdrant vector, FalkorDB graph",
+      "label": "Local tier",
+      "sublabel": "flat JSON truth + SQLite index.db, FTS5",
       "pos": [
         30,
         400
       ],
       "size": [
         260,
-        80
+        64
       ],
-      "tag": "pluggable"
+      "tag": "always on"
+    },
+    {
+      "id": "shared",
+      "type": "database",
+      "label": "Shared tier: skmem-pg",
+      "sublabel": "pgvector, pg_search BM25, Apache AGE",
+      "pos": [
+        30,
+        540
+      ],
+      "size": [
+        260,
+        64
+      ],
+      "tag": "per node"
     },
     {
       "id": "services",
       "type": "backend",
       "label": "Store Services",
-      "sublabel": "integrity seal, identity, rehydration, routing",
+      "sublabel": "integrity seal, soul, ritual (FEB, songs), quadrants, audience gate",
       "pos": [
         340,
         400
       ],
       "size": [
-        290,
+        300,
         80
       ]
     },
@@ -191,17 +206,24 @@
       "variant": "dashed"
     },
     {
-      "id": "store-to-storage",
+      "id": "store-to-local",
       "from": "store",
-      "to": "storage",
+      "to": "local",
       "label": "read/write",
       "variant": "default"
+    },
+    {
+      "id": "local-to-shared",
+      "from": "local",
+      "to": "shared",
+      "label": "sync --vector --graph",
+      "variant": "dashed"
     },
     {
       "id": "store-to-services",
       "from": "store",
       "to": "services",
-      "label": "seal, identity, rehydrate, route",
+      "label": "seal, ritual, route, gate",
       "variant": "default"
     },
     {
@@ -231,24 +253,24 @@
       "dot": "emerald",
       "title": "Sovereign by default",
       "items": [
-        "Flat JSON files are the source of truth, SQLite is a derived local index",
-        "No cloud dependency and no vendor lock-in required to run the store"
+        "Flat JSON files are the source of truth; SQLite and skmem-pg are derived and rebuildable",
+        "The local tier answers offline with no Postgres and no embed endpoint"
       ]
     },
     {
       "dot": "cyan",
-      "title": "Promotion, not curation",
+      "title": "Promotion by feeling and use",
       "items": [
-        "Memories move short to mid to long automatically by access count and importance score",
-        "Mid-term at 3+ accesses or importance 0.7+, long-term at 10+ accesses or importance 0.9+"
+        "Short to mid at emotional intensity 5.0+, or after 24 h with 3+ accesses (defaults)",
+        "Mid to long at intensity 7.0+, a milestone or breakthrough tag, or a Cloud 9 moment"
       ]
     },
     {
       "dot": "rose",
-      "title": "Tamper-evident",
+      "title": "Tamper-evident and gated",
       "items": [
-        "FortifiedMemoryStore seals each memory at creation and keeps an audit log",
-        "A PGP-encrypted vaulted variant of the primary backend adds encryption at rest"
+        "FortifiedMemoryStore seals each memory and keeps a chain-hashed audit log; a vaulted backend adds AES-256-GCM at rest",
+        "Every memory has an audience tag, and a declared reader can only narrow what it sees"
       ]
     }
   ]
