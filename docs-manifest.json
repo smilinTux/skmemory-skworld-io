@@ -2,7 +2,7 @@
   "repo": "smilinTux/skmemory",
   "branch": "main",
   "path": "docs",
-  "generated": "2026-11-07",
+  "generated": "2026-11-08",
   "note": "Committed fallback for the /docs viewer when the GitHub Contents API is unavailable or rate-limited. Regenerate from: python docs-manifest-gen.py smilinTux/skmemory --out docs-manifest.json",
   "docs": [
     {
@@ -40,6 +40,10 @@
     {
       "name": "RUNBOOK-restore.md",
       "title": "Runbook: restore an agent's memory from backup (drilled)"
+    },
+    {
+      "name": "SHADOW_READ.md",
+      "title": "Shadow-read parity (SKMEM-R-11)"
     },
     {
       "name": "admission_policy.md",
